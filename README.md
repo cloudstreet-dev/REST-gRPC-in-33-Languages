@@ -68,7 +68,8 @@ All implementations provide the same Task Management API functionality:
 ✅ [Rust](book/manuscript/chapters/10-rust.md) (Actix-web and Tonic)  
 ✅ [Kotlin](book/manuscript/chapters/11-kotlin.md) (Ktor and gRPC)  
 ✅ [Swift](book/manuscript/chapters/12-swift.md) (Vapor and gRPC)  
-✅ [C#](book/manuscript/chapters/13-csharp.md) (ASP.NET Core and gRPC)
+✅ [C#](book/manuscript/chapters/13-csharp.md) (ASP.NET Core and gRPC)  
+✅ [F#](book/manuscript/chapters/14-fsharp.md) (ASP.NET Core and gRPC)
 
 ### In Progress
 
@@ -256,7 +257,8 @@ This is an active project under development. The book and code examples are bein
 - [x] Kotlin implementation
 - [x] Swift implementation
 - [x] C# implementation
-- [ ] 7 more mainstream languages
+- [x] F# implementation
+- [ ] 6 more mainstream languages
 - [ ] 10 functional/specialized languages
 - [ ] 3 shell/scripting languages
 - [ ] Complete manuscript
