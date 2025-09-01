@@ -66,7 +66,8 @@ All implementations provide the same Task Management API functionality:
 ✅ [Python](book/manuscript/chapters/08-python.md) (FastAPI and gRPC)  
 ✅ [Java](book/manuscript/chapters/09-java.md) (Spring Boot and gRPC)  
 ✅ [Rust](book/manuscript/chapters/10-rust.md) (Actix-web and Tonic)  
-✅ [Kotlin](book/manuscript/chapters/11-kotlin.md) (Ktor and gRPC)
+✅ [Kotlin](book/manuscript/chapters/11-kotlin.md) (Ktor and gRPC)  
+✅ [Swift](book/manuscript/chapters/12-swift.md) (Vapor and gRPC)
 
 ### In Progress
 
@@ -75,7 +76,6 @@ All implementations provide the same Task Management API functionality:
 #### Popular/Mainstream
 
 #### Systems & Mobile
-- Swift (Vapor)
 - Objective-C
 - C (Custom)
 - D (Vibe.d)
@@ -253,7 +253,8 @@ This is an active project under development. The book and code examples are bein
 - [x] Java implementation
 - [x] Rust implementation
 - [x] Kotlin implementation
-- [ ] 9 more mainstream languages
+- [x] Swift implementation
+- [ ] 8 more mainstream languages
 - [ ] 10 functional/specialized languages
 - [ ] 3 shell/scripting languages
 - [ ] Complete manuscript
