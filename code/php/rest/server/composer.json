@@ -1,0 +1,33 @@
+{
+    "name": "cloudstreet/task-api-server",
+    "description": "Task Management REST API Server in PHP",
+    "type": "project",
+    "require": {
+        "php": "^8.1",
+        "slim/slim": "^4.12",
+        "slim/psr7": "^1.6",
+        "ramsey/uuid": "^4.7",
+        "monolog/monolog": "^3.5",
+        "vlucas/phpdotenv": "^5.6",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "TaskAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TaskAPI\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "start": "php -S localhost:8080 -t public",
+        "test": "phpunit",
+        "analyze": "phpstan analyse"
+    }
+}
