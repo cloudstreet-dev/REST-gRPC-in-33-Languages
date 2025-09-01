@@ -1,0 +1,25 @@
+name: task-api-server
+version: 1.0.0
+
+authors:
+  - David Christian Liedle <david.liedle@gmail.com>
+  - Claude Opus 4.1 <noreply@anthropic.com>
+
+targets:
+  server:
+    main: src/server.cr
+
+crystal: ">= 1.11.0"
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+    version: ~> 1.4.0
+  uuid:
+    github: wyhaines/uuid.cr
+  json_mapping:
+    github: crystal-lang/json_mapping.cr
+
+development_dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
