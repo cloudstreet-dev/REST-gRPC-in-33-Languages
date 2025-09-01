@@ -64,14 +64,14 @@ All implementations provide the same Task Management API functionality:
 ✅ [Crystal](book/manuscript/chapters/06-crystal.md) (Kemal and gRPC alternatives)  
 ✅ [PHP](book/manuscript/chapters/07-php.md) (Slim Framework and gRPC)  
 ✅ [Python](book/manuscript/chapters/08-python.md) (FastAPI and gRPC)  
-✅ [Java](book/manuscript/chapters/09-java.md) (Spring Boot and gRPC)
+✅ [Java](book/manuscript/chapters/09-java.md) (Spring Boot and gRPC)  
+✅ [Rust](book/manuscript/chapters/10-rust.md) (Actix-web and Tonic)
 
 ### In Progress
 
 ### Planned
 
 #### Popular/Mainstream
-- Rust (Actix/Tonic)
 - Kotlin (Ktor)
 
 #### Systems & Mobile
@@ -251,7 +251,7 @@ This is an active project under development. The book and code examples are bein
 - [x] PHP implementation
 - [x] Python implementation
 - [x] Java implementation
-- [ ] Rust implementation
+- [x] Rust implementation
 - [ ] 10 more mainstream languages
 - [ ] 10 functional/specialized languages
 - [ ] 3 shell/scripting languages

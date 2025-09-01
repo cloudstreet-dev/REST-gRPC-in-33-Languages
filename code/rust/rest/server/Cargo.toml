@@ -1,0 +1,21 @@
+[package]
+name = "task-rest-server"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.4"
+actix-cors = "0.6"
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+env_logger = "0.11"
+log = "0.4"
+validator = { version = "0.16", features = ["derive"] }
+utoipa = { version = "4.1", features = ["actix_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "5.0", features = ["actix-web"] }
+
+[dev-dependencies]
+actix-rt = "2.9"
