@@ -1,0 +1,22 @@
+{
+  "name": "task-api-grpc-server",
+  "version": "1.0.0",
+  "description": "gRPC server for task management in JavaScript",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["grpc", "api", "tasks", "protobuf"],
+  "author": "David Christian Liedle",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.0",
+    "@grpc/proto-loader": "^0.7.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

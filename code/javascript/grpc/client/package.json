@@ -1,0 +1,17 @@
+{
+  "name": "task-api-grpc-client",
+  "version": "1.0.0",
+  "description": "gRPC client for task management in JavaScript",
+  "main": "client.js",
+  "type": "module",
+  "scripts": {
+    "start": "node client.js"
+  },
+  "keywords": ["grpc", "client", "tasks", "protobuf"],
+  "author": "David Christian Liedle",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.0",
+    "@grpc/proto-loader": "^0.7.0"
+  }
+}
