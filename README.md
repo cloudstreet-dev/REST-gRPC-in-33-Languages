@@ -62,10 +62,10 @@ All implementations provide the same Task Management API functionality:
 ✅ [Go](book/manuscript/chapters/04-go.md) (Gin and native gRPC)  
 ✅ [Ruby](book/manuscript/chapters/05-ruby.md) (Sinatra and gRPC)  
 ✅ [Crystal](book/manuscript/chapters/06-crystal.md) (Kemal and gRPC alternatives)  
-✅ [PHP](book/manuscript/chapters/07-php.md) (Slim Framework and gRPC)
+✅ [PHP](book/manuscript/chapters/07-php.md) (Slim Framework and gRPC)  
+✅ [Python](book/manuscript/chapters/08-python.md) (FastAPI and gRPC)
 
 ### In Progress
-🚧 Python (FastAPI and gRPC)
 🚧 Java (Spring Boot and gRPC)
 
 ### Planned
@@ -249,7 +249,7 @@ This is an active project under development. The book and code examples are bein
 - [x] Ruby implementation
 - [x] Crystal implementation
 - [x] PHP implementation
-- [ ] Python implementation
+- [x] Python implementation
 - [ ] Java implementation
 - [ ] Rust implementation
 - [ ] 10 more mainstream languages
