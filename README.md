@@ -56,20 +56,21 @@ All implementations provide the same Task Management API functionality:
 ## Languages Covered
 
 ### Currently Implemented
-✅ JavaScript (Node.js with Express and gRPC)
+✅ [JavaScript](book/manuscript/chapters/01-javascript.md) (Node.js with Express and gRPC)  
+✅ [TypeScript](book/manuscript/chapters/02-typescript.md) (Deno with Oak and gRPC)  
+✅ [Dart](book/manuscript/chapters/03-dart.md) (Shelf framework and simplified gRPC)  
+✅ [Go](book/manuscript/chapters/04-go.md) (Gin and native gRPC)  
+✅ [Ruby](book/manuscript/chapters/05-ruby.md) (Sinatra and gRPC)  
+✅ [Crystal](book/manuscript/chapters/06-crystal.md) (Kemal and gRPC alternatives)  
+✅ [PHP](book/manuscript/chapters/07-php.md) (Slim Framework and gRPC)
 
 ### In Progress
-🚧 TypeScript (Deno)
 🚧 Python (FastAPI and gRPC)
-🚧 Go (Gin and native gRPC)
 🚧 Java (Spring Boot and gRPC)
 
 ### Planned
 
 #### Popular/Mainstream
-- Dart (Flutter/Shelf)
-- Ruby (Sinatra)
-- PHP (Slim)
 - Rust (Actix/Tonic)
 - Kotlin (Ktor)
 
@@ -77,7 +78,6 @@ All implementations provide the same Task Management API functionality:
 - Swift (Vapor)
 - Objective-C
 - C (Custom)
-- Crystal (Kemal)
 - D (Vibe.d)
 
 #### Functional & Specialized
@@ -243,12 +243,16 @@ This is an active project under development. The book and code examples are bein
 
 - [x] Project structure and shared specifications
 - [x] JavaScript implementation
-- [ ] TypeScript implementation
+- [x] TypeScript implementation
+- [x] Dart implementation
+- [x] Go implementation
+- [x] Ruby implementation
+- [x] Crystal implementation
+- [x] PHP implementation
 - [ ] Python implementation
-- [ ] Go implementation
 - [ ] Java implementation
-- [ ] 5 more mainstream languages
-- [ ] 10 systems/mobile languages
+- [ ] Rust implementation
+- [ ] 10 more mainstream languages
 - [ ] 10 functional/specialized languages
 - [ ] 3 shell/scripting languages
 - [ ] Complete manuscript
