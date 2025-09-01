@@ -65,14 +65,14 @@ All implementations provide the same Task Management API functionality:
 ✅ [PHP](book/manuscript/chapters/07-php.md) (Slim Framework and gRPC)  
 ✅ [Python](book/manuscript/chapters/08-python.md) (FastAPI and gRPC)  
 ✅ [Java](book/manuscript/chapters/09-java.md) (Spring Boot and gRPC)  
-✅ [Rust](book/manuscript/chapters/10-rust.md) (Actix-web and Tonic)
+✅ [Rust](book/manuscript/chapters/10-rust.md) (Actix-web and Tonic)  
+✅ [Kotlin](book/manuscript/chapters/11-kotlin.md) (Ktor and gRPC)
 
 ### In Progress
 
 ### Planned
 
 #### Popular/Mainstream
-- Kotlin (Ktor)
 
 #### Systems & Mobile
 - Swift (Vapor)
@@ -252,7 +252,8 @@ This is an active project under development. The book and code examples are bein
 - [x] Python implementation
 - [x] Java implementation
 - [x] Rust implementation
-- [ ] 10 more mainstream languages
+- [x] Kotlin implementation
+- [ ] 9 more mainstream languages
 - [ ] 10 functional/specialized languages
 - [ ] 3 shell/scripting languages
 - [ ] Complete manuscript
