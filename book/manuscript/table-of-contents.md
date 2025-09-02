@@ -211,9 +211,11 @@
 - vweb Framework
 - REST Implementation
 
-### Chapter 33: Io 📝
+### [Chapter 33: Io](chapters/33-io.md) ✅
 - Prototype-based Object-Oriented Language
+- Everything is a Message
 - Actor Model and Concurrency
+- REST Implementation
 - Socket-based HTTP Server
 - REST Implementation
 

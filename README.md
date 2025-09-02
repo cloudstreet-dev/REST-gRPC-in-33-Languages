@@ -87,12 +87,10 @@ All implementations provide the same Task Management API functionality:
 ✅ [Nim](book/manuscript/chapters/29-nim.md) (Jester framework)  
 ✅ [Julia](book/manuscript/chapters/30-julia.md) (HTTP.jl and multiple dispatch)  
 ✅ [Gleam](book/manuscript/chapters/31-gleam.md) (Mist and actor-based concurrency)  
-✅ [V](book/manuscript/chapters/32-v.md) (vweb and zero dependencies)
+✅ [V](book/manuscript/chapters/32-v.md) (vweb and zero dependencies)  
+✅ [Io](book/manuscript/chapters/33-io.md) (Prototype-based OOP and message passing)
 
-### Planned (1 language remaining)
-
-#### Emerging & Modern
-- Io (Socket-based)
+### 🎉 All 33 Languages Complete!
 
 ## Getting Started
 
