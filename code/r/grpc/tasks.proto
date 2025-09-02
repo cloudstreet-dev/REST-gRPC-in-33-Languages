@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package tasks.v1;
+
+option go_package = "github.com/cloudstreet-dev/REST-gRPC-in-33-Languages/gen/go/tasks/v1;tasksv1";
+option java_package = "com.cloudstreet.tasks.v1";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// Task represents a single task in the task management system
+message Task {
+  // Unique identifier for the task
+  string id = 1;
+  
+  // Title of the task
+  string title = 2;
+  
+  // Detailed description of the task
+  string description = 3;
+  
+  // Current status of the task
+  TaskStatus status = 4;
+  
+  // Priority level of the task
+  TaskPriority priority = 5;
+  
+  // Tags associated with the task
+  repeated string tags = 6;
+  
+  // User who created the task
+  string created_by = 7;
+  
+  // User currently assigned to the task
+  string assigned_to = 8;
+  
+  // When the task was created
+  google.protobuf.Timestamp created_at = 9;
+  
+  // When the task was last updated
+  google.protobuf.Timestamp updated_at = 10;
+  
+  // When the task is due
+  google.protobuf.Timestamp due_date = 11;
+  
+  // When the task was completed (if applicable)
+  google.protobuf.Timestamp completed_at = 12;
+}
+
+// TaskStatus represents the current state of a task
+enum TaskStatus {
+  TASK_STATUS_UNSPECIFIED = 0;
+  TASK_STATUS_PENDING = 1;
+  TASK_STATUS_IN_PROGRESS = 2;
+  TASK_STATUS_COMPLETED = 3;
+  TASK_STATUS_CANCELLED = 4;
+  TASK_STATUS_ON_HOLD = 5;
+}
+
+// TaskPriority represents the priority level of a task
+enum TaskPriority {
+  TASK_PRIORITY_UNSPECIFIED = 0;
+  TASK_PRIORITY_LOW = 1;
+  TASK_PRIORITY_MEDIUM = 2;
+  TASK_PRIORITY_HIGH = 3;
+  TASK_PRIORITY_CRITICAL = 4;
+}
+
+// Request message for listing tasks
+message ListTasksRequest {
+  // Maximum number of tasks to return
+  int32 page_size = 1;
+  
+  // Page token for pagination
+  string page_token = 2;
+  
+  // Filter by status
+  TaskStatus status = 3;
+  
+  // Filter by assigned user
+  string assigned_to = 4;
+  
+  // Filter by tags (tasks must have all specified tags)
+  repeated string tags = 5;
+  
+  // Sort order
+  SortOrder sort_order = 6;
+}
+
+// Response message for listing tasks
+message ListTasksResponse {
+  // List of tasks
+  repeated Task tasks = 1;
+  
+  // Token for retrieving the next page
+  string next_page_token = 2;
+  
+  // Total number of tasks matching the filter
+  int32 total_count = 3;
+}
+
+// Request message for getting a single task
+message GetTaskRequest {
+  // ID of the task to retrieve
+  string id = 1;
+}
+
+// Request message for creating a task
+message CreateTaskRequest {
+  // Task data (ID will be generated)
+  Task task = 1;
+}
+
+// Request message for updating a task
+message UpdateTaskRequest {
+  // Task with updated fields
+  Task task = 1;
+  
+  // Field mask to specify which fields to update
+  repeated string update_mask = 2;
+}
+
+// Request message for deleting a task
+message DeleteTaskRequest {
+  // ID of the task to delete
+  string id = 1;
+}
+
+// Request message for watching task changes
+message WatchTasksRequest {
+  // Filter for which tasks to watch
+  repeated string task_ids = 1;
+  
+  // Watch all tasks if true
+  bool watch_all = 2;
+  
+  // Filter by assigned user
+  string assigned_to = 3;
+}
+
+// Response message for task change events
+message TaskEvent {
+  // Type of event
+  EventType event_type = 1;
+  
+  // Task that changed
+  Task task = 2;
+  
+  // Timestamp of the event
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// Type of change event
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  EVENT_TYPE_CREATED = 1;
+  EVENT_TYPE_UPDATED = 2;
+  EVENT_TYPE_DELETED = 3;
+  EVENT_TYPE_STATUS_CHANGED = 4;
+}
+
+// Sort order for listing tasks
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_CREATED_AT_ASC = 1;
+  SORT_ORDER_CREATED_AT_DESC = 2;
+  SORT_ORDER_DUE_DATE_ASC = 3;
+  SORT_ORDER_DUE_DATE_DESC = 4;
+  SORT_ORDER_PRIORITY_ASC = 5;
+  SORT_ORDER_PRIORITY_DESC = 6;
+}
+
+// TaskService defines the gRPC service for task management
+service TaskService {
+  // List all tasks with optional filtering
+  rpc ListTasks(ListTasksRequest) returns (stream Task);
+  
+  // Get a single task by ID
+  rpc GetTask(GetTaskRequest) returns (Task);
+  
+  // Create a new task
+  rpc CreateTask(CreateTaskRequest) returns (Task);
+  
+  // Update an existing task
+  rpc UpdateTask(UpdateTaskRequest) returns (Task);
+  
+  // Delete a task
+  rpc DeleteTask(DeleteTaskRequest) returns (google.protobuf.Empty);
+  
+  // Watch for task changes (bidirectional streaming)
+  rpc WatchTasks(stream WatchTasksRequest) returns (stream TaskEvent);
+}
