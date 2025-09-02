@@ -199,10 +199,11 @@
 - HTTP.jl Framework
 - REST Implementation
 
-### Chapter 31: Gleam 📝
-- Type-Safe BEAM Language
+### [Chapter 31: Gleam](chapters/31-gleam.md) ✅
+- Type-Safe BEAM Programming
+- Actor-Based Concurrency
 - Mist Framework
-- REST and gRPC Implementations
+- REST Implementation
 
 ### Chapter 32: V 📝
 - Simple, Fast, Safe Language

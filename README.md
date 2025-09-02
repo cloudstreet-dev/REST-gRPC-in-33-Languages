@@ -85,12 +85,12 @@ All implementations provide the same Task Management API functionality:
 ✅ [Erlang](book/manuscript/chapters/27-erlang.md) (Cowboy and OTP)  
 ✅ [OCaml](book/manuscript/chapters/28-ocaml.md) (Dream framework)  
 ✅ [Nim](book/manuscript/chapters/29-nim.md) (Jester framework)  
-✅ [Julia](book/manuscript/chapters/30-julia.md) (HTTP.jl and multiple dispatch)
+✅ [Julia](book/manuscript/chapters/30-julia.md) (HTTP.jl and multiple dispatch)  
+✅ [Gleam](book/manuscript/chapters/31-gleam.md) (Mist and actor-based concurrency)
 
-### Planned (3 languages remaining)
+### Planned (2 languages remaining)
 
 #### Emerging & Modern
-- Gleam (Mist)
 - V (vweb)
 - Io (Socket-based)
 
