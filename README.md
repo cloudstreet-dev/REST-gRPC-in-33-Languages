@@ -72,31 +72,29 @@ All implementations provide the same Task Management API functionality:
 ✅ [F#](book/manuscript/chapters/14-fsharp.md) (ASP.NET Core and gRPC)  
 ✅ [C++](book/manuscript/chapters/15-cpp.md) (Crow and gRPC++)  
 ✅ [Scala](book/manuscript/chapters/16-scala.md) (Akka HTTP and ScalaPB)  
-✅ [Objective-C](book/manuscript/chapters/17-objective-c.md) (Foundation and GCDWebServer)
+✅ [Objective-C](book/manuscript/chapters/17-objective-c.md) (Foundation and GCDWebServer)  
+✅ [C](book/manuscript/chapters/18-c.md) (Custom HTTP server)  
+✅ [D](book/manuscript/chapters/19-d.md) (Vibe.d)  
+✅ [Perl](book/manuscript/chapters/20-perl.md) (Mojolicious)  
+✅ [Elixir](book/manuscript/chapters/21-elixir.md) (Phoenix and gRPC)  
+✅ [Lua](book/manuscript/chapters/22-lua.md) (OpenResty)  
+✅ [R](book/manuscript/chapters/23-r.md) (Plumber)  
+✅ [Haskell](book/manuscript/chapters/24-haskell.md) (Servant)  
+✅ [Clojure](book/manuscript/chapters/25-clojure.md) (Ring and Compojure)  
+✅ [Zig](book/manuscript/chapters/26-zig.md) (Built-in HTTP server)
 
-### Planned (16 languages remaining)
-
-#### Systems & Mobile
-- C (Custom)
-- D (Vibe.d)
+### Planned (7 languages remaining)
 
 #### Functional & Specialized  
 - Erlang (Cowboy)
-- Elixir (Phoenix)
-- Clojure (Ring)
-- Haskell (Servant)
 - OCaml (Dream)
-- Smalltalk (Seaside)
-- eLisp (Emacs)
-- Io
+- Nim (Jester)
 
-#### Emerging & Experimental
+#### Emerging & Modern
 - Julia (HTTP.jl)
-- Ada (AWS)
-- Ballerina
-- Groovy (Grails)
-- Lua (OpenResty)
-- Perl (Mojolicious)
+- Gleam (Mist)
+- V (vweb)
+- Raku (Cro)
 
 ## Getting Started
 

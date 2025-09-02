@@ -1,0 +1,16 @@
+.{
+    .name = "task-server",
+    .version = "0.1.0",
+    .minimum_zig_version = "0.11.0",
+    .dependencies = .{
+        .httpz = .{
+            .url = "https://github.com/karlseguin/http.zig/archive/refs/tags/v0.2.0.tar.gz",
+            .hash = "122067d4bc35c7e39990e4df7bafb86b52e0d1129c88ab87dd9a7e69a511e93bb457",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
