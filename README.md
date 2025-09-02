@@ -70,7 +70,8 @@ All implementations provide the same Task Management API functionality:
 ✅ [Swift](book/manuscript/chapters/12-swift.md) (Vapor and gRPC)  
 ✅ [C#](book/manuscript/chapters/13-csharp.md) (ASP.NET Core and gRPC)  
 ✅ [F#](book/manuscript/chapters/14-fsharp.md) (ASP.NET Core and gRPC)  
-✅ [C++](book/manuscript/chapters/15-cpp.md) (Crow and gRPC++)
+✅ [C++](book/manuscript/chapters/15-cpp.md) (Crow and gRPC++)  
+✅ [Scala](book/manuscript/chapters/16-scala.md) (Akka HTTP and ScalaPB)
 
 ### In Progress
 
