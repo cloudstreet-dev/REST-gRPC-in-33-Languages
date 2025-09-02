@@ -863,6 +863,164 @@ pid = :global.whereis_name(:my_process)
 7. **Type Specifications**: Add @spec annotations for better tooling
 8. **Property Testing**: Use StreamData for comprehensive testing
 
+## gRPC Implementation
+
+Elixir has excellent gRPC support through the `grpc` library, which provides both client and server implementations:
+
+### Server Implementation
+
+```elixir
+# mix.exs dependencies
+defp deps do
+  [
+    {:grpc, "~> 0.6"},
+    {:protobuf, "~> 0.11"},
+    {:google_protos, "~> 0.3"}
+  ]
+end
+
+# Generated from tasks.proto
+defmodule Tasks.TaskService.Server do
+  use GRPC.Server, service: Tasks.TaskService.Service
+
+  def list_tasks(request, stream) do
+    tasks = TaskStore.list_tasks(
+      status: request.status,
+      assigned_to: request.assigned_to
+    )
+    
+    Enum.each(tasks, fn task ->
+      GRPC.Server.send_reply(stream, task)
+    end)
+  end
+
+  def get_task(%{id: id}, _stream) do
+    case TaskStore.get_task(id) do
+      {:ok, task} -> task
+      {:error, :not_found} ->
+        raise GRPC.RPCError, status: :not_found, message: "Task not found"
+    end
+  end
+
+  def create_task(%{task: task_data}, _stream) do
+    {:ok, task} = TaskStore.create_task(task_data)
+    task
+  end
+
+  def watch_tasks(stream) do
+    # Bidirectional streaming
+    spawn(fn -> handle_watch_input(stream) end)
+    
+    TaskStore.subscribe_to_events()
+    
+    receive do
+      {:task_event, event} ->
+        GRPC.Server.send_reply(stream, event)
+        watch_tasks(stream)
+      :stop ->
+        :ok
+    end
+  end
+end
+
+# Start gRPC server
+defmodule TaskGrpcServer.Application do
+  use Application
+
+  def start(_type, _args) do
+    children = [
+      {GRPC.Server.Supervisor, 
+       {Tasks.TaskService.Server, 50051, [interceptors: [LoggingInterceptor]]}}
+    ]
+
+    opts = [strategy: :one_for_one, name: TaskGrpcServer.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+```
+
+### Client Implementation
+
+```elixir
+defmodule TaskGrpcClient do
+  def connect(host \\ "localhost", port \\ 50051) do
+    {:ok, channel} = GRPC.Stub.connect("#{host}:#{port}")
+    channel
+  end
+
+  def list_tasks(channel, opts \\ []) do
+    request = %ListTasksRequest{
+      status: Keyword.get(opts, :status),
+      assigned_to: Keyword.get(opts, :assigned_to)
+    }
+    
+    {:ok, stream} = channel |> Tasks.TaskService.Stub.list_tasks(request)
+    
+    Enum.to_list(stream)
+  end
+
+  def create_task(channel, task_data) do
+    request = %CreateTaskRequest{task: task_data}
+    
+    case channel |> Tasks.TaskService.Stub.create_task(request) do
+      {:ok, task} -> {:ok, task}
+      {:error, %GRPC.RPCError{} = error} -> {:error, error}
+    end
+  end
+
+  def watch_tasks(channel) do
+    {:ok, stream} = channel |> Tasks.TaskService.Stub.watch_tasks()
+    
+    # Send watch requests
+    GRPC.Stub.send_request(stream, %WatchTasksRequest{watch_all: true})
+    
+    # Receive events
+    Task.async(fn ->
+      Enum.each(stream, fn event ->
+        IO.inspect(event, label: "Task event")
+      end)
+    end)
+    
+    stream
+  end
+end
+```
+
+### Interceptors
+
+```elixir
+defmodule LoggingInterceptor do
+  @behaviour GRPC.Server.Interceptor
+
+  def init(opts), do: opts
+
+  def call(req, stream, next, _opts) do
+    start_time = System.monotonic_time()
+    
+    try do
+      result = next.(req, stream)
+      duration = System.monotonic_time() - start_time
+      Logger.info("gRPC call completed in #{duration}μs")
+      result
+    rescue
+      error ->
+        Logger.error("gRPC call failed: #{inspect(error)}")
+        reraise error, __STACKTRACE__
+    end
+  end
+end
+```
+
+### Advantages of gRPC in Elixir
+
+1. **Native Streaming**: Elixir's processes map naturally to gRPC streams
+2. **Fault Tolerance**: OTP supervision trees handle gRPC service failures
+3. **Hot Code Reload**: Update gRPC services without downtime
+4. **Distributed**: Easy to scale gRPC services across nodes
+5. **Performance**: Efficient binary protocol handling
+
+The combination of Elixir's actor model with gRPC's streaming capabilities creates a powerful platform for building resilient, real-time microservices.
+
 ## Conclusion
 
 Elixir represents a unique combination of developer-friendly syntax, functional programming paradigms, and industrial-strength runtime capabilities. By building on the Erlang VM's decades of production experience, Elixir provides a modern language for building systems that need to be concurrent, fault-tolerant, and distributed.

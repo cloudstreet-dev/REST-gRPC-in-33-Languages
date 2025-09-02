@@ -548,6 +548,397 @@ on 'test' => sub {
 };
 ```
 
+## gRPC Implementation in Perl
+
+While Perl's gRPC ecosystem is not as mature as other languages, there are options available for implementing gRPC services.
+
+### Using Grpc::XS
+
+The `Grpc::XS` module provides Perl bindings for gRPC's C++ library:
+
+```perl
+# Install prerequisites
+# cpan install Alien::ProtoBuf
+# cpan install Grpc::XS
+
+use Grpc::XS;
+use Grpc::XS::Server;
+use Grpc::XS::ServerCredentials;
+use Google::ProtocolBuffers;
+
+# Define the protobuf schema
+Google::ProtocolBuffers->parse(
+    "
+    message Task {
+        optional string id = 1;
+        optional string title = 2;
+        optional string description = 3;
+        optional string status = 4;
+        optional string priority = 5;
+        repeated string tags = 6;
+        optional string assigned_to = 7;
+        optional string created_at = 8;
+        optional string updated_at = 9;
+    }
+    
+    message ListTasksRequest {
+        optional string status = 1;
+        optional string assigned_to = 2;
+        repeated string tags = 3;
+        optional int32 page_size = 4;
+        optional string page_token = 5;
+    }
+    
+    message ListTasksResponse {
+        repeated Task tasks = 1;
+        optional string next_page_token = 2;
+    }
+    ",
+    { create_accessors => 1 }
+);
+```
+
+### gRPC Server Implementation
+
+```perl
+package TaskService;
+use strict;
+use warnings;
+use Grpc::XS::Server;
+use Grpc::XS::ServerCredentials;
+
+sub new {
+    my $class = shift;
+    my $self = {
+        repository => TaskRepository->new(),
+        server => undef,
+    };
+    bless $self, $class;
+    return $self;
+}
+
+sub ListTasks {
+    my ($self, $call) = @_;
+    
+    my $request = $call->request;
+    my $filters = {
+        status => $request->status,
+        assigned_to => $request->assigned_to,
+        tags => [$request->tags],
+    };
+    
+    my $tasks = $self->{repository}->list_tasks(%$filters);
+    
+    # Stream responses
+    foreach my $task (@$tasks) {
+        my $response = ListTasksResponse->new({
+            tasks => [$self->_task_to_proto($task)],
+        });
+        $call->write($response);
+    }
+    
+    $call->finish;
+}
+
+sub GetTask {
+    my ($self, $call) = @_;
+    
+    my $request = $call->request;
+    my $task = $self->{repository}->get_task($request->id);
+    
+    if ($task) {
+        $call->write($self->_task_to_proto($task));
+        $call->finish(Grpc::XS::Status->ok);
+    } else {
+        $call->finish(Grpc::XS::Status->new(
+            Grpc::Constants::GRPC_STATUS_NOT_FOUND,
+            "Task not found"
+        ));
+    }
+}
+
+sub CreateTask {
+    my ($self, $call) = @_;
+    
+    my $request = $call->request;
+    my $task_data = {
+        title => $request->title,
+        description => $request->description,
+        priority => $request->priority,
+        tags => [$request->tags],
+        assigned_to => $request->assigned_to,
+    };
+    
+    my $task = $self->{repository}->create_task($task_data);
+    $call->write($self->_task_to_proto($task));
+    $call->finish;
+}
+
+sub _task_to_proto {
+    my ($self, $task) = @_;
+    
+    return Task->new({
+        id => $task->{id},
+        title => $task->{title},
+        description => $task->{description},
+        status => $task->{status},
+        priority => $task->{priority},
+        tags => $task->{tags},
+        assigned_to => $task->{assigned_to},
+        created_at => $task->{created_at},
+        updated_at => $task->{updated_at},
+    });
+}
+
+sub start_server {
+    my ($self, $port) = @_;
+    $port ||= 50051;
+    
+    $self->{server} = Grpc::XS::Server->new();
+    
+    # Register service methods
+    $self->{server}->add_service(
+        'tasks.v1.TaskService',
+        {
+            ListTasks => sub { $self->ListTasks(@_) },
+            GetTask => sub { $self->GetTask(@_) },
+            CreateTask => sub { $self->CreateTask(@_) },
+        }
+    );
+    
+    # Add insecure port
+    $self->{server}->add_http2_port(
+        "0.0.0.0:$port",
+        Grpc::XS::ServerCredentials->create_insecure()
+    );
+    
+    print "gRPC server listening on port $port\n";
+    $self->{server}->start();
+    $self->{server}->wait();
+}
+```
+
+### gRPC Client Implementation
+
+```perl
+package TaskClient;
+use strict;
+use warnings;
+use Grpc::XS::Client;
+use Grpc::XS::ChannelCredentials;
+
+sub new {
+    my ($class, $address) = @_;
+    $address ||= 'localhost:50051';
+    
+    my $self = {
+        channel => Grpc::XS::Client->new(
+            $address,
+            Grpc::XS::ChannelCredentials->create_insecure()
+        ),
+    };
+    
+    bless $self, $class;
+    return $self;
+}
+
+sub list_tasks {
+    my ($self, %filters) = @_;
+    
+    my $request = ListTasksRequest->new({
+        status => $filters{status},
+        assigned_to => $filters{assigned_to},
+        tags => $filters{tags} || [],
+        page_size => $filters{page_size} || 20,
+    });
+    
+    my $call = $self->{channel}->call(
+        'tasks.v1.TaskService/ListTasks',
+        $request
+    );
+    
+    my @tasks;
+    while (my $response = $call->read) {
+        push @tasks, @{$response->tasks};
+    }
+    
+    return \@tasks;
+}
+
+sub get_task {
+    my ($self, $id) = @_;
+    
+    my $request = GetTaskRequest->new({ id => $id });
+    
+    my $call = $self->{channel}->call(
+        'tasks.v1.TaskService/GetTask',
+        $request
+    );
+    
+    return $call->read;
+}
+
+sub create_task {
+    my ($self, $task_data) = @_;
+    
+    my $request = CreateTaskRequest->new($task_data);
+    
+    my $call = $self->{channel}->call(
+        'tasks.v1.TaskService/CreateTask',
+        $request
+    );
+    
+    return $call->read;
+}
+```
+
+### Alternative: Using grpc-perl
+
+The `grpc-perl` library provides a pure-Perl implementation:
+
+```perl
+# Using the grpc-perl library (experimental)
+use Grpc::Client;
+use IO::Async::Loop;
+
+my $loop = IO::Async::Loop->new;
+my $client = Grpc::Client->new(
+    host => 'localhost',
+    port => 50051,
+);
+
+# Async call with promises
+$client->call_async(
+    service => 'tasks.v1.TaskService',
+    method => 'ListTasks',
+    request => { status => 'pending' }
+)->then(sub {
+    my ($response) = @_;
+    foreach my $task (@{$response->{tasks}}) {
+        print "Task: $task->{title}\n";
+    }
+})->catch(sub {
+    my ($error) = @_;
+    warn "Error: $error\n";
+});
+
+$loop->run;
+```
+
+### Protocol Buffer Code Generation
+
+For production use, generate Perl code from `.proto` files:
+
+```bash
+# Install protobuf compiler plugin for Perl
+cpan install Google::ProtocolBuffers::Dynamic
+
+# Generate Perl code from proto file
+protoc --perl_out=./lib \
+       --grpc_out=./lib \
+       --plugin=protoc-gen-grpc=`which grpc_perl_plugin` \
+       task.proto
+```
+
+### Streaming Support
+
+```perl
+sub StreamTasks {
+    my ($self, $call) = @_;
+    
+    # Server streaming
+    my $request = $call->request;
+    my $tasks = $self->{repository}->get_all_tasks();
+    
+    foreach my $task (@$tasks) {
+        # Check if client cancelled
+        last if $call->cancelled;
+        
+        # Send each task as a separate message
+        $call->write($self->_task_to_proto($task));
+        
+        # Simulate delay
+        sleep(0.1);
+    }
+    
+    $call->finish;
+}
+
+sub BatchCreateTasks {
+    my ($self, $call) = @_;
+    
+    # Client streaming
+    my @created_tasks;
+    
+    while (my $request = $call->read) {
+        my $task = $self->{repository}->create_task({
+            title => $request->title,
+            description => $request->description,
+        });
+        push @created_tasks, $task;
+    }
+    
+    # Send summary response
+    my $response = BatchCreateResponse->new({
+        created_count => scalar(@created_tasks),
+        task_ids => [map { $_->{id} } @created_tasks],
+    });
+    
+    $call->write($response);
+    $call->finish;
+}
+```
+
+### Interceptors and Middleware
+
+```perl
+package LoggingInterceptor;
+
+sub new {
+    my $class = shift;
+    return bless {}, $class;
+}
+
+sub intercept_call {
+    my ($self, $call, $method, $next) = @_;
+    
+    print "[gRPC] Calling $method\n";
+    my $start_time = time();
+    
+    # Call the next interceptor or the actual method
+    my $result = $next->($call);
+    
+    my $duration = time() - $start_time;
+    print "[gRPC] $method completed in ${duration}s\n";
+    
+    return $result;
+}
+
+# Register interceptor
+$server->add_interceptor(LoggingInterceptor->new());
+```
+
+### Performance Considerations
+
+1. **Connection Pooling**: Reuse gRPC channels for multiple calls
+2. **Message Size**: Perl's memory management can impact large message handling
+3. **Concurrency**: Use `IO::Async` or `AnyEvent` for async operations
+4. **Serialization**: Consider `JSON::XS` for JSON fallback when protobuf is overkill
+
+### Limitations and Challenges
+
+1. **Library Maturity**: Perl's gRPC libraries are less mature than other languages
+2. **Documentation**: Limited examples and documentation available
+3. **Async Support**: Callback-based async can be complex
+4. **Type Safety**: Dynamic typing requires careful validation
+
+### When to Use gRPC with Perl
+
+- **Existing Perl Infrastructure**: When integrating with existing Perl systems
+- **Polyglot Services**: Perl services communicating with other languages
+- **Performance Requirements**: When REST overhead is too high
+- **Streaming Data**: For real-time data processing pipelines
+
 ## Common Perl Idioms
 
 ### Schwartzian Transform

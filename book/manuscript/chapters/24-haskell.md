@@ -584,6 +584,341 @@ sum $ map (*2) $ filter even [1..1000000]
 - **Use Haskell when**: Need mathematical purity, research applications
 - **Use F# when**: Working in .NET, need practical FP
 
+## gRPC Implementation in Haskell
+
+Haskell has excellent gRPC support through the `grpc-haskell` library, which provides a type-safe, high-performance implementation.
+
+### Setting Up gRPC with grpc-haskell
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE GADTs #-}
+
+import Network.GRPC.HighLevel.Generated
+import Network.GRPC.HighLevel.Server
+import qualified Data.ByteString.Lazy as LBS
+import Proto.Task
+import Proto.Task_Fields
+
+-- Define service handlers
+taskServiceHandlers :: Task -> ServerRequest 'Normal ListTasksRequest ListTasksResponse 
+                    -> IO (ServerResponse 'Normal ListTasksResponse)
+taskServiceHandlers repo (ServerNormalRequest meta req) = do
+    let statusFilter = req ^. status
+        assignedFilter = req ^. assignedTo
+        tagsFilter = req ^. tags
+    
+    tasks <- filterTasks repo statusFilter assignedFilter tagsFilter
+    
+    let response = defMessage 
+            & tasks .~ tasks
+            & totalCount .~ fromIntegral (length tasks)
+    
+    return $ ServerNormalResponse response [] StatusOk ""
+
+-- Server implementation
+runGrpcServer :: IO ()
+runGrpcServer = do
+    let serviceDef = taskService taskServiceHandlers
+    
+    let serverConfig = ServerConfig 
+            { serverHost = "localhost"
+            , serverPort = 50051
+            , serverArgs = 
+                [ CompressionAlgArg GrpcCompressDeflate
+                , MaxReceiveMessageLength maxBound
+                ]
+            , serverSecurity = Nothing
+            }
+    
+    runServer serverConfig serviceDef
+```
+
+### Protocol Buffer Integration
+
+```haskell
+-- Generated from task.proto
+data Task = Task
+    { taskId :: Text
+    , taskTitle :: Text
+    , taskDescription :: Text
+    , taskStatus :: TaskStatus
+    , taskPriority :: TaskPriority
+    , taskTags :: [Text]
+    , taskAssignedTo :: Text
+    , taskCreatedAt :: UTCTime
+    , taskUpdatedAt :: UTCTime
+    } deriving (Eq, Show, Generic)
+
+instance Message Task
+instance HasField Task "id" Text
+instance HasField Task "title" Text
+instance HasField Task "status" TaskStatus
+
+-- Service definition (generated)
+taskService :: (ServerRequest 'Normal ListTasksRequest ListTasksResponse 
+             -> IO (ServerResponse 'Normal ListTasksResponse))
+            -> (ServerRequest 'Normal GetTaskRequest Task 
+             -> IO (ServerResponse 'Normal Task))
+            -> (ServerRequest 'Normal CreateTaskRequest Task 
+             -> IO (ServerResponse 'Normal Task))
+            -> ServiceDefinition
+```
+
+### Streaming Support
+
+```haskell
+-- Server streaming
+streamTasks :: Task -> ServerRequest 'ServerStreaming StreamTasksRequest Task
+            -> IO (ServerResponse 'ServerStreaming Task)
+streamTasks repo (ServerStreamingRequest meta req) = do
+    allTasks <- getAllTasks repo
+    
+    return $ ServerStreamingResponse $ \send -> do
+        forM_ allTasks $ \task -> do
+            send task
+            threadDelay 100000  -- 100ms delay
+        
+        return ([], StatusOk, "")
+
+-- Client streaming
+batchCreateTasks :: Task -> ServerRequest 'ClientStreaming CreateTaskRequest BatchCreateResponse
+                 -> IO (ServerResponse 'ClientStreaming BatchCreateResponse)
+batchCreateTasks repo (ServerClientStreamingRequest meta recv) = do
+    createdTasks <- newIORef []
+    
+    let processRequest = do
+            req <- recv
+            case req of
+                Left err -> return ()
+                Right (Just taskReq) -> do
+                    task <- createTask repo taskReq
+                    modifyIORef' createdTasks (task:)
+                    processRequest
+                Right Nothing -> return ()
+    
+    processRequest
+    tasks <- readIORef createdTasks
+    
+    let response = defMessage
+            & createdCount .~ fromIntegral (length tasks)
+            & taskIds .~ map taskId tasks
+    
+    return $ ServerNormalResponse response [] StatusOk ""
+
+-- Bidirectional streaming
+processTaskStream :: ServerRequest 'BiDiStreaming TaskCommand TaskEvent
+                  -> IO (ServerResponse 'BiDiStreaming TaskEvent)
+processTaskStream (ServerBiDiStreamingRequest meta recv send) = do
+    void $ forkIO $ forever $ do
+        req <- recv
+        case req of
+            Right (Just cmd) -> do
+                event <- processCommand cmd
+                void $ send event
+            _ -> return ()
+    
+    return ([], StatusOk, "")
+```
+
+### Type-Safe Client
+
+```haskell
+-- Client implementation
+data TaskClient = TaskClient
+    { listTasks :: ListTasksRequest -> IO (Either GRPCError ListTasksResponse)
+    , getTask :: GetTaskRequest -> IO (Either GRPCError Task)
+    , createTask :: CreateTaskRequest -> IO (Either GRPCError Task)
+    , streamTasks :: StreamTasksRequest -> IO (Either GRPCError [Task])
+    }
+
+createTaskClient :: ClientConfig -> IO TaskClient
+createTaskClient config = do
+    mgr <- newManager defaultManagerSettings
+    
+    return TaskClient
+        { listTasks = \req -> 
+            withGRPCClient config $ \client -> do
+                let rpc = RPC :: RPC TaskService "listTasks"
+                unary rpc client req
+        
+        , getTask = \req ->
+            withGRPCClient config $ \client -> do
+                let rpc = RPC :: RPC TaskService "getTask"
+                unary rpc client req
+        
+        , createTask = \req ->
+            withGRPCClient config $ \client -> do
+                let rpc = RPC :: RPC TaskService "createTask"
+                unary rpc client req
+        
+        , streamTasks = \req ->
+            withGRPCClient config $ \client -> do
+                let rpc = RPC :: RPC TaskService "streamTasks"
+                serverStreaming rpc client req $ \stream -> do
+                    tasks <- collectStream stream
+                    return tasks
+        }
+
+-- Usage
+main :: IO ()
+main = do
+    let clientConfig = ClientConfig "localhost" 50051 [] Nothing
+    client <- createTaskClient clientConfig
+    
+    -- List tasks
+    result <- listTasks client $ defMessage & status .~ Just "pending"
+    case result of
+        Right response -> print $ response ^. tasks
+        Left err -> putStrLn $ "Error: " ++ show err
+```
+
+### Interceptors and Middleware
+
+```haskell
+-- Server interceptor
+loggingInterceptor :: ServerCall a -> IO (ServerCall a)
+loggingInterceptor call = do
+    let method = serverCallMethod call
+    putStrLn $ "Received call to: " ++ show method
+    
+    start <- getCurrentTime
+    result <- call
+    end <- getCurrentTime
+    
+    let duration = diffUTCTime end start
+    putStrLn $ "Call completed in: " ++ show duration
+    
+    return result
+
+-- Client interceptor
+authInterceptor :: Metadata -> Metadata
+authInterceptor metadata = 
+    metadata <> [("authorization", "Bearer " <> token)]
+  where
+    token = "your-auth-token"
+
+-- Apply interceptors
+serverWithInterceptors :: ServiceDefinition -> ServiceDefinition
+serverWithInterceptors = mapService loggingInterceptor
+
+clientWithAuth :: ClientConfig -> ClientConfig
+clientWithAuth config = config 
+    { clientMetadata = authInterceptor (clientMetadata config) }
+```
+
+### Advanced Type Safety with Servant-GRPC Bridge
+
+```haskell
+-- Bridge between Servant and gRPC types
+class ToGRPC a b | a -> b where
+    toGRPC :: a -> b
+
+class FromGRPC a b | a -> b where
+    fromGRPC :: a -> b
+
+instance ToGRPC ServantTask ProtoTask where
+    toGRPC servantTask = defMessage
+        & id .~ servantTaskId servantTask
+        & title .~ servantTaskTitle servantTask
+        & status .~ toGRPCStatus (servantTaskStatus servantTask)
+
+-- Unified service definition
+data UnifiedService m = UnifiedService
+    { restHandler :: ServerT TaskAPI m
+    , grpcHandler :: TaskService m
+    }
+
+-- Serve both REST and gRPC from same logic
+serveUnified :: UnifiedService IO -> IO ()
+serveUnified service = do
+    -- Start REST server
+    forkIO $ run 8080 $ serve (Proxy :: Proxy TaskAPI) (restHandler service)
+    
+    -- Start gRPC server
+    runGrpcServer (grpcHandler service)
+```
+
+### Performance Optimizations
+
+```haskell
+-- Use streaming for large datasets
+streamLargeTasks :: ServerRequest 'ServerStreaming Empty Task
+                 -> IO (ServerResponse 'ServerStreaming Task)
+streamLargeTasks req = do
+    return $ ServerStreamingResponse $ \send -> do
+        -- Stream from database cursor
+        withDatabaseCursor $ \cursor -> do
+            fix $ \loop -> do
+                batch <- fetchBatch cursor 100
+                if null batch
+                    then return ([], StatusOk, "")
+                    else do
+                        mapM_ send batch
+                        loop
+
+-- Connection pooling
+data GRPCPool = GRPCPool 
+    { poolConnections :: TVar [ClientConnection]
+    , poolConfig :: ClientConfig
+    }
+
+withPooledConnection :: GRPCPool -> (ClientConnection -> IO a) -> IO a
+withPooledConnection pool action = do
+    conn <- atomically $ do
+        conns <- readTVar (poolConnections pool)
+        case conns of
+            (c:cs) -> do
+                writeTVar (poolConnections pool) cs
+                return c
+            [] -> retry
+    
+    result <- action conn `finally` returnConnection pool conn
+    return result
+```
+
+### Testing gRPC Services
+
+```haskell
+-- Property-based testing
+prop_createTaskRoundtrip :: CreateTaskRequest -> Property
+prop_createTaskRoundtrip req = monadicIO $ do
+    response <- run $ withTestServer $ \client -> do
+        createTask client req
+    
+    assert $ case response of
+        Right task -> taskTitle task == req ^. title
+        Left _ -> False
+
+-- Integration testing
+spec :: Spec
+spec = describe "TaskService" $ do
+    it "lists tasks with filters" $ do
+        withTestServer $ \client -> do
+            -- Create test tasks
+            task1 <- createTask client $ defMessage & title .~ "Task 1" & status .~ "pending"
+            task2 <- createTask client $ defMessage & title .~ "Task 2" & status .~ "completed"
+            
+            -- List with filter
+            result <- listTasks client $ defMessage & status .~ Just "pending"
+            
+            case result of
+                Right response -> do
+                    length (response ^. tasks) `shouldBe` 1
+                    head (response ^. tasks) ^. title `shouldBe` "Task 1"
+                Left err -> expectationFailure $ show err
+```
+
+### Best Practices for gRPC in Haskell
+
+1. **Use Protocol Buffers**: Define services in `.proto` files for interoperability
+2. **Leverage Type Safety**: Use Haskell's type system to prevent protocol errors
+3. **Handle Streaming Carefully**: Use conduit or pipes for efficient streaming
+4. **Pool Connections**: Reuse gRPC connections for better performance
+5. **Test Thoroughly**: Use property-based testing for protocol compliance
+6. **Monitor Performance**: Track metrics for latency and throughput
+
 ## Best Practices
 
 1. **Make illegal states unrepresentable**: Use types to enforce invariants

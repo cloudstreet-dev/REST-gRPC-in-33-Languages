@@ -20,10 +20,10 @@ defmodule TaskGrpcServer.MixProject do
 
   defp deps do
     [
-      {:grpc, "~> 0.7"},
+      {:grpc, "~> 0.6"},
       {:protobuf, "~> 0.11"},
       {:google_protos, "~> 0.3"},
-      {:uuid, "~> 1.1"}
+      {:jason, "~> 1.4"}
     ]
   end
 end
