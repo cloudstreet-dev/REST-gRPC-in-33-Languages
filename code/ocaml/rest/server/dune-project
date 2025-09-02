@@ -1,0 +1,28 @@
+(lang dune 3.10)
+
+(name task_server)
+
+(generate_opam_files true)
+
+(source
+ (github cloudstreet-dev/REST-gRPC-in-33-Languages))
+
+(authors "David Liedle")
+
+(maintainers "David Liedle")
+
+(license MIT)
+
+(package
+ (name task_server)
+ (synopsis "Task Management REST API Server in OCaml")
+ (description "A REST API server for task management built with Dream framework")
+ (depends
+  ocaml
+  dune
+  dream
+  lwt
+  lwt_ppx
+  yojson
+  ppx_deriving_yojson
+  uuidm))

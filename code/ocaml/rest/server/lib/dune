@@ -1,0 +1,4 @@
+(library
+ (name task_server)
+ (libraries dream lwt yojson ppx_deriving_yojson.runtime uuidm)
+ (preprocess (pps lwt_ppx ppx_deriving_yojson)))

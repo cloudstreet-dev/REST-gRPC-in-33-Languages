@@ -183,10 +183,10 @@
 - Cowboy Framework
 - REST Implementation
 
-### Chapter 28: OCaml 📝
-- Functional Programming with ML
+### [Chapter 28: OCaml](chapters/28-ocaml.md) ✅
+- Functional Programming with ML Type System
 - Dream Framework
-- REST and gRPC Implementations
+- REST Implementation with Type Safety
 
 ### Chapter 29: Nim 📝
 - Systems Programming with Python-like Syntax
@@ -307,9 +307,9 @@
 
 - **Total Chapters**: 33
 - **Total Appendices**: 10
-- **Completed Chapters**: 27
+- **Completed Chapters**: 28
 - **In Progress**: 0
-- **Remaining**: 6
+- **Remaining**: 5
 - **Estimated Page Count**: 1,800-2,200 pages
 - **Code Examples**: 66+ complete implementations (REST and gRPC where supported)
 
@@ -344,7 +344,7 @@
 25. ✅ Clojure (Ring and Compojure)
 26. ✅ Zig (Built-in HTTP server)
 27. ✅ Erlang (Cowboy and OTP)
-28. 📝 OCaml (Dream)
+28. ✅ OCaml (Dream framework)
 29. 📝 Nim (Jester)
 30. 📝 Julia (HTTP.jl)
 31. 📝 Gleam (Mist)

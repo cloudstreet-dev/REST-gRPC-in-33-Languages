@@ -1,0 +1,5 @@
+(executable
+ (public_name task_client)
+ (name main)
+ (libraries task_client_lib lwt.unix)
+ (preprocess (pps lwt_ppx)))

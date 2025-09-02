@@ -82,12 +82,12 @@ All implementations provide the same Task Management API functionality:
 ✅ [Haskell](book/manuscript/chapters/24-haskell.md) (Servant)  
 ✅ [Clojure](book/manuscript/chapters/25-clojure.md) (Ring and Compojure)  
 ✅ [Zig](book/manuscript/chapters/26-zig.md) (Built-in HTTP server)  
-✅ [Erlang](book/manuscript/chapters/27-erlang.md) (Cowboy and OTP)
+✅ [Erlang](book/manuscript/chapters/27-erlang.md) (Cowboy and OTP)  
+✅ [OCaml](book/manuscript/chapters/28-ocaml.md) (Dream framework)
 
-### Planned (6 languages remaining)
+### Planned (5 languages remaining)
 
 #### Functional & Specialized
-- OCaml (Dream)
 - Nim (Jester)
 
 #### Emerging & Modern
