@@ -1,0 +1,13 @@
+{
+    "name": "task-rest-client",
+    "description": "Task Management REST API Client in D",
+    "authors": ["David Christian Liedle"],
+    "copyright": "Copyright © 2025, David Christian Liedle",
+    "license": "MIT",
+    "dependencies": {
+        "vibe-d:http": "~>0.9.7",
+        "vibe-d:data": "~>0.9.7"
+    },
+    "targetType": "executable",
+    "targetName": "task-rest-client"
+}

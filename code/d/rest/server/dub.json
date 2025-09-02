@@ -1,0 +1,16 @@
+{
+    "name": "task-rest-server",
+    "description": "Task Management REST API Server in D",
+    "authors": ["David Christian Liedle"],
+    "copyright": "Copyright © 2025, David Christian Liedle",
+    "license": "MIT",
+    "dependencies": {
+        "vibe-d": "~>0.9.7"
+    },
+    "subConfigurations": {
+        "vibe-d": "vibe-core"
+    },
+    "versions": ["VibeDefaultMain"],
+    "targetType": "executable",
+    "targetName": "task-rest-server"
+}
