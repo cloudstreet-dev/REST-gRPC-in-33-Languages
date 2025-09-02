@@ -205,10 +205,11 @@
 - Mist Framework
 - REST Implementation
 
-### Chapter 32: V 📝
+### [Chapter 32: V](chapters/32-v.md) ✅
 - Simple, Fast, Safe Language
+- Zero Dependencies and C Interop
 - vweb Framework
-- REST and gRPC Implementations
+- REST Implementation
 
 ### Chapter 33: Io 📝
 - Prototype-based Object-Oriented Language
