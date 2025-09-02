@@ -118,91 +118,99 @@
 - Modern Objective-C
 - REST and gRPC Implementations
 
-## Part III: Systems & Mobile Languages (Chapters 18-20)
+## Part III: Systems & Scripting Languages (Chapters 18-20)
 
-### Chapter 18: C
+### [Chapter 18: C](chapters/18-c.md) ✅
 - About the C Programming Language
 - C vs C++
 - Low-level API Implementation
-- REST and gRPC Implementations
+- Custom HTTP Server Implementation
 
-### Chapter 19: D
+### [Chapter 19: D](chapters/19-d.md) ✅
 - About the D Programming Language
 - D as a Better C++
+- Vibe.d Framework
 - REST and gRPC Implementations
 
-### Chapter 20: Perl
+### [Chapter 20: Perl](chapters/20-perl.md) ✅
 - About the Perl Programming Language
 - Perl's Legacy and Modern Use
+- Mojolicious Framework
 - REST and gRPC Implementations
 
-### Chapter 21: Lua
+## Part IV: Functional & Modern Languages (Chapters 21-26)
+
+### [Chapter 21: Elixir](chapters/21-elixir.md) ✅
+- Modern Erlang VM Language
+- Phoenix Framework
+- OTP and Fault Tolerance
+- REST and gRPC Implementations
+
+### [Chapter 22: Lua](chapters/22-lua.md) ✅
 - About the Lua Programming Language
 - Lua in Embedded Systems
 - OpenResty and nginx
-- REST and gRPC Implementations
+- REST Implementation (gRPC limitations noted)
 
-## Part IV: Functional & Specialized Languages (Chapters 22-29)
+### [Chapter 23: R](chapters/23-r.md) ✅
+- Statistical Computing Language
+- Plumber Framework
+- REST Implementation (gRPC limitations noted)
 
-### Chapter 22: Erlang
+### [Chapter 24: Haskell](chapters/24-haskell.md) ✅
+- Pure Functional Programming
+- Servant Framework
+- Type-Safe APIs
+- REST Implementation
+
+### [Chapter 25: Clojure](chapters/25-clojure.md) ✅
+- About the Clojure Programming Language
+- Lisp on the JVM
+- Ring and Compojure
+- REST Implementation
+
+### [Chapter 26: Zig](chapters/26-zig.md) ✅
+- Modern Systems Programming
+- Manual Memory Management
+- Zero-Cost Abstractions
+- REST Implementation
+
+## Part V: Remaining Languages (Chapters 27-33)
+
+### Chapter 27: Erlang 📝
 - About the Erlang Programming Language
 - OTP and Fault Tolerance
 - Cowboy Framework
 - REST and gRPC Implementations
 
-### Chapter 23: Elixir
-- Modern Erlang VM Language
-- Phoenix Framework
-- REST and gRPC Implementations
-
-### Chapter 24: Clojure
-- About the Clojure Programming Language
-- Lisp on the JVM
-- Ring and Compojure
-- REST and gRPC Implementations
-
-### Chapter 25: Haskell
-- Pure Functional Programming
-- Servant Framework
-- REST and gRPC Implementations
-
-### Chapter 26: OCaml
-- About OCaml
+### Chapter 28: OCaml 📝
+- Functional Programming with ML
 - Dream Framework
 - REST and gRPC Implementations
 
-### Chapter 27: Smalltalk
-- Object-Oriented Pioneer
-- Seaside Framework
+### Chapter 29: Nim 📝
+- Systems Programming with Python-like Syntax
+- Jester Framework
 - REST and gRPC Implementations
 
-### Chapter 28: eLisp
-- Emacs as a Platform
-- REST and gRPC Implementations
-
-### Chapter 29: Io
-- Prototype-based OOP
-- REST and gRPC Implementations
-
-## Part V: Emerging & Experimental Languages (Chapters 30-33)
-
-### Chapter 30: Julia
+### Chapter 30: Julia 📝
 - Scientific Computing Language
-- HTTP.jl
+- HTTP.jl Framework
 - REST and gRPC Implementations
 
-### Chapter 31: Ada
-- Safety-Critical Systems
+### Chapter 31: Gleam 📝
+- Type-Safe BEAM Language
+- Mist Framework
 - REST and gRPC Implementations
 
-### Chapter 32: Ballerina
-- Cloud-Native Programming Language
-- Built-in Network Abstractions
+### Chapter 32: V 📝
+- Simple, Fast, Safe Language
+- vweb Framework
 - REST and gRPC Implementations
 
-### Chapter 33: Groovy
-- Dynamic Language for the JVM
-- Grails Framework
+### Chapter 33: Raku 📝
+- Perl 6 Evolution
+- Cro Framework
 - REST and gRPC Implementations
 
 ## Part VI: Shell & Scripting (Shell Languages - Supplementary)
@@ -298,46 +306,46 @@
 
 - **Total Chapters**: 33
 - **Total Appendices**: 10
-- **Completed Chapters**: 17
+- **Completed Chapters**: 26
 - **In Progress**: 0
-- **Remaining**: 16
+- **Remaining**: 7
 - **Estimated Page Count**: 1,800-2,200 pages
-- **Code Examples**: 90 complete implementations (45 REST, 45 gRPC)
+- **Code Examples**: 66+ complete implementations (REST and gRPC where supported)
 
 ## Implementation Status
 
 ✅ Complete | 🚧 In Progress | 📝 Planned
 
-1. ✅ JavaScript (Node.js)
-2. ✅ TypeScript (Deno)
-3. ✅ Dart
-4. ✅ Go
-5. ✅ Ruby
-6. ✅ Crystal
-7. ✅ PHP
-8. ✅ Python
-9. ✅ Java
-10. ✅ Rust
-11. ✅ Kotlin
-12. ✅ Swift
-13. ✅ C#
-14. ✅ F#
-15. ✅ C++
-16. ✅ Scala
-17. ✅ Objective-C
-18. ✅ C
-19. ✅ D
-20. ✅ Perl
-21. 📝 Lua
-22. 📝 Erlang
-23. 📝 Elixir
-24. 📝 Clojure
-25. 📝 Haskell
-26. 📝 OCaml
-27. 📝 Smalltalk
-28. 📝 eLisp
-29. 📝 Io
-30. 📝 Julia
-31. 📝 Ada
-32. 📝 Ballerina
-33. 📝 Groovy
+1. ✅ JavaScript (Node.js with Express and gRPC)
+2. ✅ TypeScript (Deno with Oak and gRPC)
+3. ✅ Dart (Shelf framework and gRPC)
+4. ✅ Go (Gin and native gRPC)
+5. ✅ Ruby (Sinatra and gRPC)
+6. ✅ Crystal (Kemal and gRPC alternatives)
+7. ✅ PHP (Slim Framework and gRPC)
+8. ✅ Python (FastAPI and gRPC)
+9. ✅ Java (Spring Boot and gRPC)
+10. ✅ Rust (Actix-web and Tonic)
+11. ✅ Kotlin (Ktor and gRPC)
+12. ✅ Swift (Vapor and gRPC)
+13. ✅ C# (ASP.NET Core and gRPC)
+14. ✅ F# (ASP.NET Core and gRPC)
+15. ✅ C++ (Crow and gRPC++)
+16. ✅ Scala (Akka HTTP and ScalaPB)
+17. ✅ Objective-C (GCDWebServer and gRPC)
+18. ✅ C (Custom HTTP server)
+19. ✅ D (Vibe.d)
+20. ✅ Perl (Mojolicious)
+21. ✅ Elixir (Phoenix and gRPC)
+22. ✅ Lua (OpenResty, gRPC limitations noted)
+23. ✅ R (Plumber, gRPC limitations noted)
+24. ✅ Haskell (Servant)
+25. ✅ Clojure (Ring and Compojure)
+26. ✅ Zig (Built-in HTTP server)
+27. 📝 Erlang (Cowboy)
+28. 📝 OCaml (Dream)
+29. 📝 Nim (Jester)
+30. 📝 Julia (HTTP.jl)
+31. 📝 Gleam (Mist)
+32. 📝 V (vweb)
+33. 📝 Raku (Cro)
