@@ -84,12 +84,12 @@ All implementations provide the same Task Management API functionality:
 ✅ [Zig](book/manuscript/chapters/26-zig.md) (Built-in HTTP server)  
 ✅ [Erlang](book/manuscript/chapters/27-erlang.md) (Cowboy and OTP)  
 ✅ [OCaml](book/manuscript/chapters/28-ocaml.md) (Dream framework)  
-✅ [Nim](book/manuscript/chapters/29-nim.md) (Jester framework)
+✅ [Nim](book/manuscript/chapters/29-nim.md) (Jester framework)  
+✅ [Julia](book/manuscript/chapters/30-julia.md) (HTTP.jl and multiple dispatch)
 
-### Planned (4 languages remaining)
+### Planned (3 languages remaining)
 
 #### Emerging & Modern
-- Julia (HTTP.jl)
 - Gleam (Mist)
 - V (vweb)
 - Io (Socket-based)

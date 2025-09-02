@@ -193,10 +193,11 @@
 - Jester Framework
 - REST Implementation with Compile-Time Execution
 
-### Chapter 30: Julia 📝
-- Scientific Computing Language
+### [Chapter 30: Julia](chapters/30-julia.md) ✅
+- Scientific Computing with Dynamic Typing
+- Multiple Dispatch and JIT Compilation
 - HTTP.jl Framework
-- REST and gRPC Implementations
+- REST Implementation
 
 ### Chapter 31: Gleam 📝
 - Type-Safe BEAM Language

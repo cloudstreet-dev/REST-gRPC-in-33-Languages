@@ -1,0 +1,18 @@
+name = "TaskServer"
+uuid = "12345678-1234-5678-1234-567812345678"
+authors = ["David Liedle"]
+version = "1.0.0"
+
+[deps]
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
+
+[compat]
+julia = "1.9"
+HTTP = "1.10"
+JSON3 = "1.13"
+StructTypes = "1.10"
