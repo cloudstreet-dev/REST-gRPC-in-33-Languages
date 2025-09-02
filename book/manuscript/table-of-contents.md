@@ -188,10 +188,10 @@
 - Dream Framework
 - REST Implementation with Type Safety
 
-### Chapter 29: Nim 📝
+### [Chapter 29: Nim](chapters/29-nim.md) ✅
 - Systems Programming with Python-like Syntax
 - Jester Framework
-- REST and gRPC Implementations
+- REST Implementation with Compile-Time Execution
 
 ### Chapter 30: Julia 📝
 - Scientific Computing Language
@@ -307,9 +307,9 @@
 
 - **Total Chapters**: 33
 - **Total Appendices**: 10
-- **Completed Chapters**: 28
+- **Completed Chapters**: 29
 - **In Progress**: 0
-- **Remaining**: 5
+- **Remaining**: 4
 - **Estimated Page Count**: 1,800-2,200 pages
 - **Code Examples**: 66+ complete implementations (REST and gRPC where supported)
 
@@ -345,7 +345,7 @@
 26. ✅ Zig (Built-in HTTP server)
 27. ✅ Erlang (Cowboy and OTP)
 28. ✅ OCaml (Dream framework)
-29. 📝 Nim (Jester)
+29. ✅ Nim (Jester framework)
 30. 📝 Julia (HTTP.jl)
 31. 📝 Gleam (Mist)
 32. 📝 V (vweb)

@@ -83,12 +83,10 @@ All implementations provide the same Task Management API functionality:
 ✅ [Clojure](book/manuscript/chapters/25-clojure.md) (Ring and Compojure)  
 ✅ [Zig](book/manuscript/chapters/26-zig.md) (Built-in HTTP server)  
 ✅ [Erlang](book/manuscript/chapters/27-erlang.md) (Cowboy and OTP)  
-✅ [OCaml](book/manuscript/chapters/28-ocaml.md) (Dream framework)
+✅ [OCaml](book/manuscript/chapters/28-ocaml.md) (Dream framework)  
+✅ [Nim](book/manuscript/chapters/29-nim.md) (Jester framework)
 
-### Planned (5 languages remaining)
-
-#### Functional & Specialized
-- Nim (Jester)
+### Planned (4 languages remaining)
 
 #### Emerging & Modern
 - Julia (HTTP.jl)
