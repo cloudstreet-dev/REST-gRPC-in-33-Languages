@@ -1,0 +1,34 @@
+cabal-version:      2.4
+name:               task-server
+version:            0.1.0.0
+synopsis:           Task Management REST API Server
+description:        A REST API server for task management built with Servant
+license:            MIT
+author:             CloudStreet
+maintainer:         dev@cloudstreet.com
+category:           Web
+build-type:         Simple
+
+executable task-server
+    main-is:          Main.hs
+    other-modules:    API
+                      Types
+                      Repository
+    build-depends:    base ^>=4.17.0.0,
+                      servant,
+                      servant-server,
+                      wai,
+                      warp,
+                      aeson,
+                      text,
+                      time,
+                      uuid,
+                      containers,
+                      stm,
+                      mtl,
+                      http-types,
+                      bytestring,
+                      wai-cors
+    hs-source-dirs:   src
+    default-language: Haskell2010
+    ghc-options:      -Wall -threaded -rtsopts -with-rtsopts=-N

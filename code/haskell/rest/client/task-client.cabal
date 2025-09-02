@@ -1,0 +1,27 @@
+cabal-version:      2.4
+name:               task-client
+version:            0.1.0.0
+synopsis:           Task Management REST API Client
+description:        A REST API client for task management
+license:            MIT
+author:             CloudStreet
+maintainer:         dev@cloudstreet.com
+category:           Web
+build-type:         Simple
+
+executable task-client
+    main-is:          Main.hs
+    other-modules:    Client
+    build-depends:    base ^>=4.17.0.0,
+                      http-client,
+                      http-client-tls,
+                      http-types,
+                      aeson,
+                      text,
+                      bytestring,
+                      containers,
+                      time,
+                      uuid
+    hs-source-dirs:   src
+    default-language: Haskell2010
+    ghc-options:      -Wall -threaded -rtsopts -with-rtsopts=-N
