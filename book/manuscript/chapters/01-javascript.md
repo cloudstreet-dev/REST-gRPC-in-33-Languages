@@ -1,4 +1,4 @@
-# Chapter One: JavaScript
+# Chapter 1: JavaScript
 
 ## About the JavaScript Programming Language
 

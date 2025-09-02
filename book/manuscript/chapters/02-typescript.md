@@ -1,4 +1,4 @@
-# Chapter Two: TypeScript
+# Chapter 2: TypeScript
 
 ## About the TypeScript Programming Language
 

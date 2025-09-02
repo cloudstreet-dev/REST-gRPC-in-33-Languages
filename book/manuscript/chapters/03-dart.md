@@ -1,4 +1,4 @@
-# Chapter Three: Dart
+# Chapter 3: Dart
 
 ## About the Dart Programming Language
 
