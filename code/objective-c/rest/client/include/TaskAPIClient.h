@@ -1,17 +1,16 @@
 #import <Foundation/Foundation.h>
-#import "../../server/include/Task.h"
 
-typedef void (^TaskCompletionHandler)(Task *task, NSError *error);
-typedef void (^TaskListCompletionHandler)(NSArray<Task *> *tasks, NSInteger totalCount, NSString *nextPageToken, NSError *error);
+// Simple completion handlers using NSDictionary for easier JSON handling
+typedef void (^DictionaryCompletionHandler)(NSDictionary *response, NSError *error);
 typedef void (^BooleanCompletionHandler)(BOOL success, NSError *error);
 
 @interface TaskAPIClient : NSObject
 
-@property (nonatomic, strong, readonly) NSURL *baseURL;
+@property (nonatomic, strong, readonly) NSString *baseURL;
 @property (nonatomic, strong, readonly) NSURLSession *session;
 
 // Initializer
-- (instancetype)initWithBaseURL:(NSURL *)baseURL;
+- (instancetype)initWithBaseURL:(NSString *)baseURL;
 
 // API Methods
 - (void)listTasksWithStatus:(NSString *)status
@@ -21,26 +20,23 @@ typedef void (^BooleanCompletionHandler)(BOOL success, NSError *error);
                   pageToken:(NSString *)pageToken
                      sortBy:(NSString *)sortBy
                   sortOrder:(NSString *)sortOrder
-                 completion:(TaskListCompletionHandler)completion;
+                 completion:(DictionaryCompletionHandler)completion;
 
-- (void)getTaskWithId:(NSString *)taskId 
-           completion:(TaskCompletionHandler)completion;
+- (void)getTask:(NSString *)taskId 
+     completion:(DictionaryCompletionHandler)completion;
 
-- (void)createTaskWithRequest:(CreateTaskRequest *)request 
-                   completion:(TaskCompletionHandler)completion;
+- (void)createTask:(NSDictionary *)task 
+        completion:(DictionaryCompletionHandler)completion;
 
 - (void)updateTask:(NSString *)taskId 
-       withRequest:(UpdateTaskRequest *)request 
-        completion:(TaskCompletionHandler)completion;
+           updates:(NSDictionary *)updates
+        completion:(DictionaryCompletionHandler)completion;
 
 - (void)updateTaskStatus:(NSString *)taskId 
-                  status:(TaskStatus)status 
-              completion:(TaskCompletionHandler)completion;
+                  status:(NSString *)status 
+              completion:(DictionaryCompletionHandler)completion;
 
 - (void)deleteTask:(NSString *)taskId 
         completion:(BooleanCompletionHandler)completion;
-
-// Demo method
-- (void)runDemo;
 
 @end

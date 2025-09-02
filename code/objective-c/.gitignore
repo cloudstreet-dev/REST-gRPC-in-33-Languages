@@ -1,0 +1,39 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+task-rest-server
+task-rest-client
+task-grpc-server
+task-grpc-client
+bin/
+
+# Build directories
+build/
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# CocoaPods
+Pods/
+*.xcworkspace
+
+# Dependencies
+GCDWebServer/

@@ -1,13 +1,13 @@
 #import "TaskAPIClient.h"
 
 @interface TaskAPIClient ()
-@property (nonatomic, strong, readwrite) NSURL *baseURL;
+@property (nonatomic, strong, readwrite) NSString *baseURL;
 @property (nonatomic, strong, readwrite) NSURLSession *session;
 @end
 
 @implementation TaskAPIClient
 
-- (instancetype)initWithBaseURL:(NSURL *)baseURL {
+- (instancetype)initWithBaseURL:(NSString *)baseURL {
     self = [super init];
     if (self) {
         _baseURL = baseURL;
@@ -29,10 +29,9 @@
                   pageToken:(NSString *)pageToken
                      sortBy:(NSString *)sortBy
                   sortOrder:(NSString *)sortOrder
-                 completion:(TaskListCompletionHandler)completion {
+                 completion:(DictionaryCompletionHandler)completion {
     
-    NSURLComponents *components = [NSURLComponents componentsWithURL:self.baseURL resolvingAgainstBaseURL:YES];
-    components.path = @"/api/tasks";
+    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@/api/tasks", self.baseURL]];
     
     NSMutableArray<NSURLQueryItem *> *queryItems = [NSMutableArray array];
     
@@ -67,7 +66,7 @@
     [[self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil, 0, nil, error);
+                completion(nil, error);
             });
             return;
         }
@@ -80,39 +79,29 @@
             
             if (jsonError) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(nil, 0, nil, jsonError);
+                    completion(nil, jsonError);
                 });
                 return;
             }
             
-            NSMutableArray<Task *> *tasks = [NSMutableArray array];
-            for (NSDictionary *taskDict in responseDict[@"tasks"]) {
-                Task *task = [[Task alloc] initWithDictionary:taskDict];
-                [tasks addObject:task];
-            }
-            
-            NSInteger totalCount = [responseDict[@"total_count"] integerValue];
-            NSString *nextPageToken = responseDict[@"next_page_token"];
-            if ([nextPageToken isKindOfClass:[NSNull class]]) {
-                nextPageToken = nil;
-            }
-            
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(tasks, totalCount, nextPageToken, nil);
+                completion(responseDict, nil);
             });
         } else {
-            NSError *httpError = [NSError errorWithDomain:@"TaskAPIError" 
+            NSString *errorMessage = [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode];
+            NSError *httpError = [NSError errorWithDomain:@"TaskAPIClient" 
                                                      code:httpResponse.statusCode 
-                                                 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode]}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil, 0, nil, httpError);
+                completion(nil, httpError);
             });
         }
     }] resume];
 }
 
-- (void)getTaskWithId:(NSString *)taskId completion:(TaskCompletionHandler)completion {
-    NSURL *url = [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"/api/tasks/%@", taskId]];
+- (void)getTask:(NSString *)taskId completion:(DictionaryCompletionHandler)completion {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/tasks/%@", self.baseURL, taskId]];
+    
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
     [[self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -127,7 +116,7 @@
         
         if (httpResponse.statusCode == 200) {
             NSError *jsonError;
-            NSDictionary *taskDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+            NSDictionary *task = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
             
             if (jsonError) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -136,21 +125,21 @@
                 return;
             }
             
-            Task *task = [[Task alloc] initWithDictionary:taskDict];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(task, nil);
             });
         } else if (httpResponse.statusCode == 404) {
-            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIError" 
-                                                         code:404 
-                                                     userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
+            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIClient" 
+                                                          code:404 
+                                                      userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, notFoundError);
             });
         } else {
-            NSError *httpError = [NSError errorWithDomain:@"TaskAPIError" 
+            NSString *errorMessage = [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode];
+            NSError *httpError = [NSError errorWithDomain:@"TaskAPIClient" 
                                                      code:httpResponse.statusCode 
-                                                 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode]}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, httpError);
             });
@@ -158,37 +147,26 @@
     }] resume];
 }
 
-- (void)createTaskWithRequest:(CreateTaskRequest *)request completion:(TaskCompletionHandler)completion {
-    NSURL *url = [self.baseURL URLByAppendingPathComponent:@"/api/tasks"];
+- (void)createTask:(NSDictionary *)task completion:(DictionaryCompletionHandler)completion {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/tasks", self.baseURL]];
     
-    NSMutableDictionary *body = [NSMutableDictionary dictionary];
-    body[@"title"] = request.title;
-    
-    if (request.taskDescription) {
-        body[@"description"] = request.taskDescription;
-    }
-    body[@"priority"] = [Task priorityToString:request.priority];
-    if (request.tags) {
-        body[@"tags"] = request.tags;
-    }
-    if (request.assignedTo) {
-        body[@"assigned_to"] = request.assignedTo;
-    }
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
     NSError *jsonError;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:body options:0 error:&jsonError];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:task options:0 error:&jsonError];
     
     if (jsonError) {
-        completion(nil, jsonError);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(nil, jsonError);
+        });
         return;
     }
     
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
-    urlRequest.HTTPMethod = @"POST";
-    urlRequest.HTTPBody = jsonData;
-    [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    request.HTTPBody = jsonData;
     
-    [[self.session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    [[self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, error);
@@ -200,7 +178,7 @@
         
         if (httpResponse.statusCode == 201) {
             NSError *parseError;
-            NSDictionary *taskDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+            NSDictionary *createdTask = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
             
             if (parseError) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -209,14 +187,21 @@
                 return;
             }
             
-            Task *task = [[Task alloc] initWithDictionary:taskDict];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(task, nil);
+                completion(createdTask, nil);
+            });
+        } else if (httpResponse.statusCode == 400) {
+            NSError *badRequestError = [NSError errorWithDomain:@"TaskAPIClient" 
+                                                           code:400 
+                                                       userInfo:@{NSLocalizedDescriptionKey: @"Bad request - title is required"}];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil, badRequestError);
             });
         } else {
-            NSError *httpError = [NSError errorWithDomain:@"TaskAPIError" 
+            NSString *errorMessage = [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode];
+            NSError *httpError = [NSError errorWithDomain:@"TaskAPIClient" 
                                                      code:httpResponse.statusCode 
-                                                 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode]}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, httpError);
             });
@@ -224,44 +209,26 @@
     }] resume];
 }
 
-- (void)updateTask:(NSString *)taskId withRequest:(UpdateTaskRequest *)request completion:(TaskCompletionHandler)completion {
-    NSURL *url = [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"/api/tasks/%@", taskId]];
+- (void)updateTask:(NSString *)taskId updates:(NSDictionary *)updates completion:(DictionaryCompletionHandler)completion {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/tasks/%@", self.baseURL, taskId]];
     
-    NSMutableDictionary *body = [NSMutableDictionary dictionary];
-    
-    if (request.title) {
-        body[@"title"] = request.title;
-    }
-    if (request.taskDescription) {
-        body[@"description"] = request.taskDescription;
-    }
-    if (request.status) {
-        body[@"status"] = [Task statusToString:[request.status integerValue]];
-    }
-    if (request.priority) {
-        body[@"priority"] = [Task priorityToString:[request.priority integerValue]];
-    }
-    if (request.tags) {
-        body[@"tags"] = request.tags;
-    }
-    if (request.assignedTo) {
-        body[@"assigned_to"] = request.assignedTo;
-    }
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"PUT";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
     NSError *jsonError;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:body options:0 error:&jsonError];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:updates options:0 error:&jsonError];
     
     if (jsonError) {
-        completion(nil, jsonError);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(nil, jsonError);
+        });
         return;
     }
     
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
-    urlRequest.HTTPMethod = @"PUT";
-    urlRequest.HTTPBody = jsonData;
-    [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    request.HTTPBody = jsonData;
     
-    [[self.session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    [[self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, error);
@@ -273,7 +240,7 @@
         
         if (httpResponse.statusCode == 200) {
             NSError *parseError;
-            NSDictionary *taskDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+            NSDictionary *updatedTask = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
             
             if (parseError) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -282,21 +249,21 @@
                 return;
             }
             
-            Task *task = [[Task alloc] initWithDictionary:taskDict];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(task, nil);
+                completion(updatedTask, nil);
             });
         } else if (httpResponse.statusCode == 404) {
-            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIError" 
-                                                         code:404 
-                                                     userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
+            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIClient" 
+                                                          code:404 
+                                                      userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, notFoundError);
             });
         } else {
-            NSError *httpError = [NSError errorWithDomain:@"TaskAPIError" 
+            NSString *errorMessage = [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode];
+            NSError *httpError = [NSError errorWithDomain:@"TaskAPIClient" 
                                                      code:httpResponse.statusCode 
-                                                 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode]}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, httpError);
             });
@@ -304,11 +271,13 @@
     }] resume];
 }
 
-- (void)updateTaskStatus:(NSString *)taskId status:(TaskStatus)status completion:(TaskCompletionHandler)completion {
-    NSString *statusString = [Task statusToString:status];
-    NSURL *url = [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"/api/tasks/%@/status?status=%@", taskId, statusString]];
+- (void)updateTaskStatus:(NSString *)taskId status:(NSString *)status completion:(DictionaryCompletionHandler)completion {
+    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@/api/tasks/%@/status", self.baseURL, taskId]];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSURLQueryItem *statusQuery = [NSURLQueryItem queryItemWithName:@"status" value:status];
+    components.queryItems = @[statusQuery];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:components.URL];
     request.HTTPMethod = @"PATCH";
     
     [[self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -323,7 +292,7 @@
         
         if (httpResponse.statusCode == 200) {
             NSError *parseError;
-            NSDictionary *taskDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+            NSDictionary *updatedTask = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
             
             if (parseError) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -332,21 +301,28 @@
                 return;
             }
             
-            Task *task = [[Task alloc] initWithDictionary:taskDict];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(task, nil);
+                completion(updatedTask, nil);
+            });
+        } else if (httpResponse.statusCode == 400) {
+            NSError *badRequestError = [NSError errorWithDomain:@"TaskAPIClient" 
+                                                           code:400 
+                                                       userInfo:@{NSLocalizedDescriptionKey: @"Invalid status value"}];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil, badRequestError);
             });
         } else if (httpResponse.statusCode == 404) {
-            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIError" 
-                                                         code:404 
-                                                     userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
+            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIClient" 
+                                                          code:404 
+                                                      userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, notFoundError);
             });
         } else {
-            NSError *httpError = [NSError errorWithDomain:@"TaskAPIError" 
+            NSString *errorMessage = [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode];
+            NSError *httpError = [NSError errorWithDomain:@"TaskAPIClient" 
                                                      code:httpResponse.statusCode 
-                                                 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode]}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, httpError);
             });
@@ -355,7 +331,7 @@
 }
 
 - (void)deleteTask:(NSString *)taskId completion:(BooleanCompletionHandler)completion {
-    NSURL *url = [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"/api/tasks/%@", taskId]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/tasks/%@", self.baseURL, taskId]];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"DELETE";
@@ -375,151 +351,22 @@
                 completion(YES, nil);
             });
         } else if (httpResponse.statusCode == 404) {
-            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIError" 
-                                                         code:404 
-                                                     userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
+            NSError *notFoundError = [NSError errorWithDomain:@"TaskAPIClient" 
+                                                          code:404 
+                                                      userInfo:@{NSLocalizedDescriptionKey: @"Task not found"}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(NO, notFoundError);
             });
         } else {
-            NSError *httpError = [NSError errorWithDomain:@"TaskAPIError" 
+            NSString *errorMessage = [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode];
+            NSError *httpError = [NSError errorWithDomain:@"TaskAPIClient" 
                                                      code:httpResponse.statusCode 
-                                                 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"HTTP Error %ld", (long)httpResponse.statusCode]}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(NO, httpError);
             });
         }
     }] resume];
-}
-
-#pragma mark - Demo
-
-- (void)runDemo {
-    NSLog(@"\n==================================================");
-    NSLog(@"Objective-C REST Client Demo");
-    NSLog(@"==================================================\n");
-    
-    dispatch_group_t group = dispatch_group_create();
-    __block Task *demoTask = nil;
-    
-    // 1. List existing tasks
-    NSLog(@"1. Listing existing tasks...");
-    dispatch_group_enter(group);
-    [self listTasksWithStatus:nil assignedTo:nil tags:nil pageSize:20 pageToken:nil sortBy:nil sortOrder:nil completion:^(NSArray<Task *> *tasks, NSInteger totalCount, NSString *nextPageToken, NSError *error) {
-        if (error) {
-            NSLog(@"Error listing tasks: %@", error.localizedDescription);
-        } else {
-            NSLog(@"Found %ld tasks:", (long)totalCount);
-            for (Task *task in tasks) {
-                NSLog(@"  - [%@] %@ (ID: %@)", [Task statusToString:task.status], task.title, task.taskId);
-            }
-        }
-        dispatch_group_leave(group);
-    }];
-    
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    
-    // 2. Create a new task
-    NSLog(@"\n2. Creating a new task...");
-    dispatch_group_enter(group);
-    
-    CreateTaskRequest *createRequest = [[CreateTaskRequest alloc] init];
-    createRequest.title = @"Objective-C REST Client Demo Task";
-    createRequest.taskDescription = @"Testing the Objective-C REST client";
-    createRequest.priority = TaskPriorityHigh;
-    createRequest.tags = @[@"demo", @"objective-c", @"rest"];
-    createRequest.assignedTo = @"ios-team";
-    
-    [self createTaskWithRequest:createRequest completion:^(Task *task, NSError *error) {
-        if (error) {
-            NSLog(@"Error creating task: %@", error.localizedDescription);
-        } else {
-            NSLog(@"Created task successfully!");
-            NSLog(@"  ID: %@", task.taskId);
-            NSLog(@"  Title: %@", task.title);
-            NSLog(@"  Status: %@", [Task statusToString:task.status]);
-            demoTask = task;
-        }
-        dispatch_group_leave(group);
-    }];
-    
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    
-    if (!demoTask) {
-        NSLog(@"Demo stopped due to task creation failure");
-        return;
-    }
-    
-    // 3. Get the created task
-    NSLog(@"\n3. Retrieving task %@...", demoTask.taskId);
-    dispatch_group_enter(group);
-    [self getTaskWithId:demoTask.taskId completion:^(Task *task, NSError *error) {
-        if (error) {
-            NSLog(@"Error getting task: %@", error.localizedDescription);
-        } else {
-            NSLog(@"Retrieved task:");
-            NSLog(@"  Title: %@", task.title);
-            NSLog(@"  Description: %@", task.taskDescription ?: @"N/A");
-            NSLog(@"  Priority: %@", [Task priorityToString:task.priority]);
-        }
-        dispatch_group_leave(group);
-    }];
-    
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    
-    // 4. Update task status
-    NSLog(@"\n4. Updating task status to in_progress...");
-    dispatch_group_enter(group);
-    [self updateTaskStatus:demoTask.taskId status:TaskStatusInProgress completion:^(Task *task, NSError *error) {
-        if (error) {
-            NSLog(@"Error updating status: %@", error.localizedDescription);
-        } else {
-            NSLog(@"Status updated successfully!");
-            NSLog(@"  New status: %@", [Task statusToString:task.status]);
-        }
-        dispatch_group_leave(group);
-    }];
-    
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    
-    // 5. Update task details
-    NSLog(@"\n5. Updating task details...");
-    dispatch_group_enter(group);
-    
-    UpdateTaskRequest *updateRequest = [[UpdateTaskRequest alloc] init];
-    updateRequest.taskDescription = @"Updated description from Objective-C client";
-    updateRequest.priority = @(TaskPriorityMedium);
-    
-    [self updateTask:demoTask.taskId withRequest:updateRequest completion:^(Task *task, NSError *error) {
-        if (error) {
-            NSLog(@"Error updating task: %@", error.localizedDescription);
-        } else {
-            NSLog(@"Task updated successfully!");
-            NSLog(@"  Description: %@", task.taskDescription);
-            NSLog(@"  Priority: %@", [Task priorityToString:task.priority]);
-        }
-        dispatch_group_leave(group);
-    }];
-    
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    
-    // 6. Delete the task
-    NSLog(@"\n6. Deleting task %@...", demoTask.taskId);
-    dispatch_group_enter(group);
-    [self deleteTask:demoTask.taskId completion:^(BOOL success, NSError *error) {
-        if (error) {
-            NSLog(@"Error deleting task: %@", error.localizedDescription);
-        } else if (success) {
-            NSLog(@"Task deleted successfully!");
-        }
-        dispatch_group_leave(group);
-    }];
-    
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    
-    NSLog(@"\n==================================================");
-    NSLog(@"Demo completed!");
-    NSLog(@"==================================================\n");
 }
 
 @end

@@ -74,18 +74,13 @@ All implementations provide the same Task Management API functionality:
 ✅ [Scala](book/manuscript/chapters/16-scala.md) (Akka HTTP and ScalaPB)  
 ✅ [Objective-C](book/manuscript/chapters/17-objective-c.md) (Foundation and GCDWebServer)
 
-### In Progress
-
-### Planned
-
-#### Popular/Mainstream
+### Planned (16 languages remaining)
 
 #### Systems & Mobile
-- Objective-C
 - C (Custom)
 - D (Vibe.d)
 
-#### Functional & Specialized
+#### Functional & Specialized  
 - Erlang (Cowboy)
 - Elixir (Phoenix)
 - Clojure (Ring)
@@ -99,16 +94,9 @@ All implementations provide the same Task Management API functionality:
 - Julia (HTTP.jl)
 - Ada (AWS)
 - Ballerina
+- Groovy (Grails)
 - Lua (OpenResty)
 - Perl (Mojolicious)
-
-#### Shell & Scripting
-- ZSH (netcat/grpcurl)
-- AppleScript
-- PowerShell
-
-#### Future
-- Carbon (when available)
 
 ## Getting Started
 
