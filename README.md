@@ -69,7 +69,8 @@ All implementations provide the same Task Management API functionality:
 ✅ [Kotlin](book/manuscript/chapters/11-kotlin.md) (Ktor and gRPC)  
 ✅ [Swift](book/manuscript/chapters/12-swift.md) (Vapor and gRPC)  
 ✅ [C#](book/manuscript/chapters/13-csharp.md) (ASP.NET Core and gRPC)  
-✅ [F#](book/manuscript/chapters/14-fsharp.md) (ASP.NET Core and gRPC)
+✅ [F#](book/manuscript/chapters/14-fsharp.md) (ASP.NET Core and gRPC)  
+✅ [C++](book/manuscript/chapters/15-cpp.md) (Crow and gRPC++)
 
 ### In Progress
 
