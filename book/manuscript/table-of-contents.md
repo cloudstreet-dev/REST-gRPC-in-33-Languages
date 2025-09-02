@@ -312,9 +312,9 @@
 
 - **Total Chapters**: 33
 - **Total Appendices**: 10
-- **Completed Chapters**: 29
+- **Completed Chapters**: 33 ✅
 - **In Progress**: 0
-- **Remaining**: 4
+- **Remaining**: 0
 - **Estimated Page Count**: 1,800-2,200 pages
 - **Code Examples**: 66+ complete implementations (REST and gRPC where supported)
 
@@ -339,19 +339,19 @@
 15. ✅ C++ (Crow and gRPC++)
 16. ✅ Scala (Akka HTTP and ScalaPB)
 17. ✅ Objective-C (GCDWebServer and gRPC)
-18. ✅ C (Custom HTTP server)
-19. ✅ D (Vibe.d)
-20. ✅ Perl (Mojolicious)
-21. ✅ Elixir (Phoenix and gRPC)
+18. ✅ C (Custom HTTP server, gRPC limitations noted)
+19. ✅ D (Vibe.d, gRPC limitations noted)
+20. ✅ Perl (Mojolicious and Grpc::XS)
+21. ✅ Elixir (Phoenix and grpc-elixir)
 22. ✅ Lua (OpenResty, gRPC limitations noted)
-23. ✅ R (Plumber, gRPC limitations noted)
-24. ✅ Haskell (Servant)
-25. ✅ Clojure (Ring and Compojure)
-26. ✅ Zig (Built-in HTTP server)
-27. ✅ Erlang (Cowboy and OTP)
-28. ✅ OCaml (Dream framework)
-29. ✅ Nim (Jester framework)
-30. 📝 Julia (HTTP.jl)
-31. 📝 Gleam (Mist)
-32. 📝 V (vweb)
-33. 📝 Io (Socket-based)
+23. ✅ R (Plumber and grpc package)
+24. ✅ Haskell (Servant and grpc-haskell)
+25. ✅ Clojure (Ring/Compojure and Protojure)
+26. ✅ Zig (Built-in HTTP server, gRPC limitations noted)
+27. ✅ Erlang (Cowboy and grpcbox)
+28. ✅ OCaml (Dream framework, gRPC limitations noted)
+29. ✅ Nim (Jester framework, gRPC limitations noted)
+30. ✅ Julia (HTTP.jl, gRPC limitations noted)
+31. ✅ Gleam (Mist framework, gRPC limitations noted)
+32. ✅ V (vweb framework, gRPC limitations noted)
+33. ✅ Io (Socket-based HTTP, gRPC limitations noted)
