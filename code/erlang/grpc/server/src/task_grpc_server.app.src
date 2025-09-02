@@ -1,0 +1,15 @@
+{application, task_grpc_server,
+ [{description, "Task Management gRPC Server"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {task_grpc_server_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    grpcbox
+   ]},
+  {env,[]},
+  {modules, []},
+  {licenses, ["Apache 2.0"]},
+  {links, []}
+ ]}.

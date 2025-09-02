@@ -516,6 +516,36 @@ property "task creation preserves title":
 6. **Use effects tracking**: Make side effects explicit
 7. **Write idiomatic Nim**: Follow style guide
 
+## gRPC Considerations
+
+Nim's gRPC support is limited but improving:
+
+**Current Options**:
+- **nim-grpc**: Community library providing basic gRPC functionality
+- **nim-protobuf**: Protocol buffer support for Nim
+- Manual binding to gRPC C++ library possible via Nim's excellent FFI
+
+**Implementation Challenges**:
+- No official gRPC support from Google
+- Limited code generation from .proto files
+- HTTP/2 implementation complexities
+- Small ecosystem means fewer examples and less community support
+
+**Alternative Approaches**:
+- Use Nim's excellent C/C++ interop to wrap gRPC C++ library
+- Implement REST-to-gRPC gateway in Go or another language
+- Consider MessagePack-RPC or JSON-RPC as lighter alternatives
+
+**Why This Might Not Matter**:
+- Nim's efficiency makes REST APIs performant enough for most use cases
+- Compile-time code generation can create type-safe RPC without protobuf
+- Nim's metaprogramming could theoretically generate better RPC code than protoc
+
+**Future Potential**:
+Nim's macro system is powerful enough to implement comprehensive protocol buffer support and gRPC code generation. As the community grows, we may see more mature gRPC tooling that leverages Nim's compile-time capabilities for zero-overhead RPC.
+
+For now, teams should use Nim for REST APIs where its performance and expressiveness shine, and consider alternative RPC mechanisms or language bridges when gRPC is mandatory.
+
 ## Conclusion
 
 Nim demonstrates that systems programming doesn't require sacrificing expressiveness for performance. Its Python-like syntax makes it approachable, while its compile-time execution and zero-cost abstractions ensure efficiency. The ability to compile to C, C++, or JavaScript provides remarkable deployment flexibility.

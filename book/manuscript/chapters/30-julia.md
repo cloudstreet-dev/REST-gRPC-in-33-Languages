@@ -644,6 +644,21 @@ end
 Pkg.test(; coverage=true)
 ```
 
+## gRPC Considerations
+
+While Julia excels at REST API development, gRPC support remains limited compared to mainstream languages. The Julia ecosystem currently lacks mature, production-ready gRPC implementations:
+
+**Current State**: The `gRPCClient.jl` package provides basic client functionality but lacks comprehensive server support. Protocol buffer code generation for Julia is experimental and not actively maintained.
+
+**Alternatives**: For systems requiring gRPC:
+- Use Julia for compute-intensive services exposed via REST, with a thin gRPC gateway in Go or Python
+- Leverage Julia's excellent C interop to call gRPC C++ libraries, though this sacrifices Julia's safety and simplicity
+- Consider Apache Thrift or MessagePack-RPC as alternatives that have better Julia support
+
+**Future Outlook**: As Julia adoption grows in production systems, gRPC support will likely improve. The language's metaprogramming capabilities make it well-suited for protocol buffer code generation, and the community has expressed interest in comprehensive gRPC support.
+
+For now, Julia shines brightest in REST API scenarios where its performance and expressiveness can be fully leveraged without the complexity of managing gRPC bindings.
+
 ## Conclusion
 
 Julia represents a paradigm shift in scientific and high-performance computing, proving that the two-language problem isn't inherent to computing but rather a limitation of language design. Through multiple dispatch, sophisticated type inference, and JIT compilation, Julia achieves the seemingly impossible: the ease of Python with the speed of C.

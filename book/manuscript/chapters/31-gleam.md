@@ -816,6 +816,33 @@ fn analyze_tasks(tasks) {
 }
 ```
 
+## gRPC Considerations
+
+Gleam's gRPC story is still developing, reflecting the language's youth and focus on core functionality over broad library support:
+
+**Current Limitations**: 
+- No native gRPC implementation exists for Gleam
+- Protocol buffer code generation for Gleam is not available
+- The type system, while excellent for domain modeling, doesn't yet have tooling to generate types from `.proto` files
+
+**Interop Solutions**: Gleam's seamless Erlang/Elixir interop provides a path to gRPC:
+- Use Elixir's `grpc` library through Gleam's FFI, though this sacrifices type safety at the boundary
+- Implement a thin gRPC proxy in Elixir that communicates with Gleam services via typed messages
+- Leverage Erlang's `grpcbox` library, though integration requires careful type mapping
+
+**Why This Matters Less**: The BEAM ecosystem traditionally favors different communication patterns:
+- **Actor Model**: Direct process communication often replaces RPC needs
+- **Phoenix Channels**: For real-time bidirectional communication
+- **GenServer Calls**: For synchronous request-response patterns
+- **Distributed Erlang**: For cluster communication without serialization overhead
+
+**Future Potential**: Gleam's type system and compile-time guarantees make it an excellent candidate for protocol buffer support. As the ecosystem matures, we can expect:
+- Type-safe protocol buffer generation leveraging Gleam's ADTs
+- Native gRPC implementation built on Mint or Finch
+- Compile-time validation of service contracts
+
+For now, Gleam excels in REST API scenarios where its type safety and BEAM foundation provide maximum value. Teams requiring gRPC should consider using Gleam for business logic with a thin gRPC adapter layer in Elixir or another BEAM language.
+
 ## Conclusion
 
 Gleam represents a significant evolution in BEAM programming, proving that type safety and developer ergonomics need not be sacrificed for the platform's legendary reliability and concurrency capabilities. By bringing static typing to the BEAM, Gleam eliminates entire categories of runtime errors while preserving the platform's strengths in building distributed, fault-tolerant systems.

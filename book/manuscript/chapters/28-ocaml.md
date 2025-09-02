@@ -596,6 +596,50 @@ let expensive_computation = memoize (fun n ->
 6. **Pattern match exhaustively**: Cover all cases
 7. **Use PPX for boilerplate**: Derive JSON, equality, etc.
 
+## gRPC Considerations
+
+OCaml has growing gRPC support through the ocaml-grpc library:
+
+**Current State**:
+- **ocaml-grpc**: Pure OCaml implementation using ocaml-h2 for HTTP/2
+- **ocaml-protoc**: Protocol buffer compiler plugin for OCaml
+- Both client and server implementations available
+- Supports streaming and unary RPCs
+
+**Implementation Example**:
+```ocaml
+(* Generated from .proto file *)
+module Grpc_service = Tasks_grpc.TaskService
+
+let handle_create_task request =
+  let open Tasks_pb in
+  let task = request.CreateTaskRequest.task in
+  (* Implementation *)
+  Lwt.return (Ok task)
+
+let server_impl =
+  Grpc_service.Server.make
+    ~create_task:handle_create_task
+    ~list_tasks:handle_list_tasks
+    ()
+
+let () =
+  let server = Grpc_lwt.Server.create server_impl in
+  Lwt_main.run (Grpc_lwt.Server.start server ~port:50051)
+```
+
+**Advantages**:
+- Type-safe code generation from .proto files
+- Lwt integration for async operations
+- Pure OCaml implementation (no C dependencies)
+
+**Limitations**:
+- Smaller ecosystem compared to Go or Java
+- Less tooling and middleware support
+- Performance not as optimized as C++ implementation
+
+For OCaml projects, the native gRPC support is mature enough for production use, especially when type safety and functional programming benefits outweigh the need for extensive ecosystem support.
+
 ## Conclusion
 
 OCaml demonstrates that functional programming and type safety need not come at the expense of practicality or performance. Its sophisticated type system catches entire classes of bugs at compile time, while features like type inference keep the code concise and readable.

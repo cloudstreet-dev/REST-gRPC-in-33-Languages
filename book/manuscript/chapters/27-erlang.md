@@ -686,6 +686,34 @@ pool_loop(Workers, Queue) ->
 6. **Hot Code Loading**: Design for code updates without downtime
 7. **Pattern Matching**: Use pattern matching instead of conditionals
 
+## gRPC Considerations
+
+Erlang has limited but functional gRPC support through community libraries:
+
+**Available Options**:
+- **grpcbox**: A pure Erlang gRPC implementation that supports both client and server
+- **grpc_client**: Erlang client for gRPC services
+- Protocol buffer support via `gpb` (Google Protocol Buffers for Erlang)
+
+**Implementation Challenges**:
+- Less mature than gRPC support in mainstream languages
+- Limited tooling for code generation from `.proto` files
+- HTTP/2 support complexities in pure Erlang
+- Manual mapping between Erlang records and protocol buffer messages
+
+**Why Erlang Often Doesn't Need gRPC**:
+- **Distributed Erlang**: Native clustering without serialization overhead
+- **gen_server**: Built-in RPC-like communication patterns
+- **Custom Protocols**: Easy to implement efficient binary protocols
+- **Message Passing**: Actor model eliminates many RPC use cases
+
+**When to Use gRPC with Erlang**:
+- Interoperability with services written in other languages
+- Compliance with organizational standards requiring gRPC
+- Integration with existing gRPC infrastructure
+
+For pure Erlang/OTP systems, the native distribution mechanisms often provide better performance and simpler debugging than gRPC. However, grpcbox provides a viable path when gRPC is required for external integration.
+
 ## Conclusion
 
 Erlang's approach to building concurrent, fault-tolerant systems is unique and powerful. Its actor model, supervision trees, and "let it crash" philosophy create systems that can run for years without downtime. While the syntax might seem unusual at first, the conceptual simplicity and power of Erlang's model make it ideal for building reliable distributed systems.
