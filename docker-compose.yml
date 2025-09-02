@@ -1,0 +1,431 @@
+version: '3.8'
+
+services:
+  # JavaScript/TypeScript Services
+  javascript-rest:
+    build: ./code/javascript/rest/server
+    ports:
+      - "8001:8080"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - api-network
+
+  javascript-grpc:
+    build: ./code/javascript/grpc/server
+    ports:
+      - "50001:50051"
+    networks:
+      - api-network
+
+  typescript-rest:
+    build: ./code/typescript/rest/server
+    ports:
+      - "8002:8080"
+    networks:
+      - api-network
+
+  typescript-grpc:
+    build: ./code/typescript/grpc/server
+    ports:
+      - "50002:50051"
+    networks:
+      - api-network
+
+  # Go Services
+  go-rest:
+    build: ./code/go/rest/server
+    ports:
+      - "8003:8080"
+    networks:
+      - api-network
+
+  go-grpc:
+    build: ./code/go/grpc/server
+    ports:
+      - "50003:50051"
+    networks:
+      - api-network
+
+  # Python Services
+  python-rest:
+    build: ./code/python/rest/server
+    ports:
+      - "8004:8080"
+    networks:
+      - api-network
+
+  python-grpc:
+    build: ./code/python/grpc/server
+    ports:
+      - "50004:50051"
+    networks:
+      - api-network
+
+  # Java Services
+  java-rest:
+    build: ./code/java/rest/server
+    ports:
+      - "8005:8080"
+    networks:
+      - api-network
+
+  java-grpc:
+    build: ./code/java/grpc/server
+    ports:
+      - "50005:50051"
+    networks:
+      - api-network
+
+  # Rust Services
+  rust-rest:
+    build: ./code/rust/rest/server
+    ports:
+      - "8006:8080"
+    networks:
+      - api-network
+
+  rust-grpc:
+    build: ./code/rust/grpc/server
+    ports:
+      - "50006:50051"
+    networks:
+      - api-network
+
+  # Kotlin Services
+  kotlin-rest:
+    build: ./code/kotlin/rest/server
+    ports:
+      - "8007:8080"
+    networks:
+      - api-network
+
+  kotlin-grpc:
+    build: ./code/kotlin/grpc/server
+    ports:
+      - "50007:50051"
+    networks:
+      - api-network
+
+  # Swift Services
+  swift-rest:
+    build: ./code/swift/rest/server
+    ports:
+      - "8008:8080"
+    networks:
+      - api-network
+
+  swift-grpc:
+    build: ./code/swift/grpc/server
+    ports:
+      - "50008:50051"
+    networks:
+      - api-network
+
+  # C# Services
+  csharp-rest:
+    build: ./code/csharp/rest/server
+    ports:
+      - "8009:8080"
+    networks:
+      - api-network
+
+  csharp-grpc:
+    build: ./code/csharp/grpc/server
+    ports:
+      - "50009:50051"
+    networks:
+      - api-network
+
+  # F# Services
+  fsharp-rest:
+    build: ./code/fsharp/rest/server
+    ports:
+      - "8010:8080"
+    networks:
+      - api-network
+
+  fsharp-grpc:
+    build: ./code/fsharp/grpc/server
+    ports:
+      - "50010:50051"
+    networks:
+      - api-network
+
+  # C++ Services
+  cpp-rest:
+    build: ./code/cpp/rest/server
+    ports:
+      - "8011:8080"
+    networks:
+      - api-network
+
+  cpp-grpc:
+    build: ./code/cpp/grpc/server
+    ports:
+      - "50011:50051"
+    networks:
+      - api-network
+
+  # Scala Services
+  scala-rest:
+    build: ./code/scala/rest/server
+    ports:
+      - "8012:8080"
+    networks:
+      - api-network
+
+  scala-grpc:
+    build: ./code/scala/grpc/server
+    ports:
+      - "50012:50051"
+    networks:
+      - api-network
+
+  # Ruby Services
+  ruby-rest:
+    build: ./code/ruby/rest/server
+    ports:
+      - "8013:8080"
+    networks:
+      - api-network
+
+  ruby-grpc:
+    build: ./code/ruby/grpc/server
+    ports:
+      - "50013:50051"
+    networks:
+      - api-network
+
+  # PHP Services
+  php-rest:
+    build: ./code/php/rest/server
+    ports:
+      - "8014:8080"
+    networks:
+      - api-network
+
+  php-grpc:
+    build: ./code/php/grpc/server
+    ports:
+      - "50014:50051"
+    networks:
+      - api-network
+
+  # Dart Services
+  dart-rest:
+    build: ./code/dart/rest/server
+    ports:
+      - "8015:8080"
+    networks:
+      - api-network
+
+  dart-grpc:
+    build: ./code/dart/grpc/server
+    ports:
+      - "50015:50051"
+    networks:
+      - api-network
+
+  # Crystal Services
+  crystal-rest:
+    build: ./code/crystal/rest/server
+    ports:
+      - "8016:8080"
+    networks:
+      - api-network
+
+  # Lua Services
+  lua-rest:
+    build: ./code/lua/rest/server
+    ports:
+      - "8017:8080"
+    networks:
+      - api-network
+
+  # C Services (REST only)
+  c-rest:
+    build: ./code/c/rest/server
+    ports:
+      - "8018:8080"
+    networks:
+      - api-network
+
+  # Perl Services
+  perl-rest:
+    build: ./code/perl/rest/server
+    ports:
+      - "8019:8080"
+    networks:
+      - api-network
+
+  perl-grpc:
+    build: ./code/perl/grpc/server
+    ports:
+      - "50019:50051"
+    networks:
+      - api-network
+
+  # R Services
+  r-rest:
+    build: ./code/r/rest/server
+    ports:
+      - "8020:8080"
+    networks:
+      - api-network
+
+  # MATLAB Services (REST only)
+  matlab-rest:
+    build: ./code/matlab/rest/server
+    ports:
+      - "8021:8080"
+    networks:
+      - api-network
+
+  # Fortran Services (REST only)
+  fortran-rest:
+    build: ./code/fortran/rest/server
+    ports:
+      - "8022:8080"
+    networks:
+      - api-network
+
+  # COBOL Services (REST only)
+  cobol-rest:
+    build: ./code/cobol/rest/server
+    ports:
+      - "8023:8080"
+    networks:
+      - api-network
+
+  # Ada Services (REST only)
+  ada-rest:
+    build: ./code/ada/rest/server
+    ports:
+      - "8024:8080"
+    networks:
+      - api-network
+
+  # Clojure Services
+  clojure-rest:
+    build: ./code/clojure/rest/server
+    ports:
+      - "8025:8080"
+    networks:
+      - api-network
+
+  clojure-grpc:
+    build: ./code/clojure/grpc/server
+    ports:
+      - "50025:50051"
+    networks:
+      - api-network
+
+  # Zig Services (REST only)
+  zig-rest:
+    build: ./code/zig/rest/server
+    ports:
+      - "8026:8080"
+    networks:
+      - api-network
+
+  # Erlang Services
+  erlang-rest:
+    build: ./code/erlang/rest/server
+    ports:
+      - "8027:8080"
+    networks:
+      - api-network
+
+  erlang-grpc:
+    build: ./code/erlang/grpc/server
+    ports:
+      - "50027:50051"
+    networks:
+      - api-network
+
+  # OCaml Services (REST only)
+  ocaml-rest:
+    build: ./code/ocaml/rest/server
+    ports:
+      - "8028:8080"
+    networks:
+      - api-network
+
+  # Nim Services (REST only)
+  nim-rest:
+    build: ./code/nim/rest/server
+    ports:
+      - "8029:8080"
+    networks:
+      - api-network
+
+  # Julia Services (REST only)
+  julia-rest:
+    build: ./code/julia/rest/server
+    ports:
+      - "8030:8080"
+    networks:
+      - api-network
+
+  # Gleam Services (REST only)
+  gleam-rest:
+    build: ./code/gleam/rest/server
+    ports:
+      - "8031:8080"
+    networks:
+      - api-network
+
+  # V Services (REST only)
+  v-rest:
+    build: ./code/v/rest/server
+    ports:
+      - "8032:8080"
+    networks:
+      - api-network
+
+  # Io Services (REST only)
+  io-rest:
+    build: ./code/io/rest/server
+    ports:
+      - "8033:8080"
+    networks:
+      - api-network
+
+  # Elixir Services
+  elixir-rest:
+    build: ./code/elixir/rest/server
+    ports:
+      - "8034:4000"
+    networks:
+      - api-network
+
+  elixir-grpc:
+    build: ./code/elixir/grpc/server
+    ports:
+      - "50034:50051"
+    networks:
+      - api-network
+
+  # Haskell Services
+  haskell-rest:
+    build: ./code/haskell/rest/server
+    ports:
+      - "8035:8080"
+    networks:
+      - api-network
+
+  haskell-grpc:
+    build: ./code/haskell/grpc/server
+    ports:
+      - "50035:50051"
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
+
+volumes:
+  shared-protos:
+    driver: local
