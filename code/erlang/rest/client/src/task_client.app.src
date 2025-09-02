@@ -1,0 +1,15 @@
+{application, task_client, [
+    {description, "Task Management REST API Client"},
+    {vsn, "1.0.0"},
+    {registered, []},
+    {applications, [
+        kernel,
+        stdlib,
+        hackney,
+        jiffy
+    ]},
+    {env, []},
+    {modules, []},
+    {licenses, ["MIT"]},
+    {links, []}
+]}.

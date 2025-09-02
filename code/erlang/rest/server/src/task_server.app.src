@@ -1,0 +1,17 @@
+{application, task_server, [
+    {description, "Task Management REST API Server"},
+    {vsn, "1.0.0"},
+    {registered, []},
+    {mod, {task_server_app, []}},
+    {applications, [
+        kernel,
+        stdlib,
+        cowboy,
+        jiffy,
+        uuid
+    ]},
+    {env, []},
+    {modules, []},
+    {licenses, ["MIT"]},
+    {links, []}
+]}.

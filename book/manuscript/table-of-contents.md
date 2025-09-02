@@ -177,11 +177,11 @@
 
 ## Part V: Remaining Languages (Chapters 27-33)
 
-### Chapter 27: Erlang 📝
+### [Chapter 27: Erlang](chapters/27-erlang.md) ✅
 - About the Erlang Programming Language
 - OTP and Fault Tolerance
 - Cowboy Framework
-- REST and gRPC Implementations
+- REST Implementation
 
 ### Chapter 28: OCaml 📝
 - Functional Programming with ML
@@ -306,9 +306,9 @@
 
 - **Total Chapters**: 33
 - **Total Appendices**: 10
-- **Completed Chapters**: 26
+- **Completed Chapters**: 27
 - **In Progress**: 0
-- **Remaining**: 7
+- **Remaining**: 6
 - **Estimated Page Count**: 1,800-2,200 pages
 - **Code Examples**: 66+ complete implementations (REST and gRPC where supported)
 
@@ -342,7 +342,7 @@
 24. ✅ Haskell (Servant)
 25. ✅ Clojure (Ring and Compojure)
 26. ✅ Zig (Built-in HTTP server)
-27. 📝 Erlang (Cowboy)
+27. ✅ Erlang (Cowboy and OTP)
 28. 📝 OCaml (Dream)
 29. 📝 Nim (Jester)
 30. 📝 Julia (HTTP.jl)
