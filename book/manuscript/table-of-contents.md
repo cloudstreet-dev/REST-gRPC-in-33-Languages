@@ -327,7 +327,7 @@
 17. ✅ Objective-C
 18. ✅ C
 19. ✅ D
-20. 📝 Perl
+20. ✅ Perl
 21. 📝 Lua
 22. 📝 Erlang
 23. 📝 Elixir
