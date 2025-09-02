@@ -94,7 +94,7 @@ All implementations provide the same Task Management API functionality:
 - Julia (HTTP.jl)
 - Gleam (Mist)
 - V (vweb)
-- Raku (Cro)
+- Io (Socket-based)
 
 ## Getting Started
 

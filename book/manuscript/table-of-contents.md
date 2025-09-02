@@ -208,10 +208,11 @@
 - vweb Framework
 - REST and gRPC Implementations
 
-### Chapter 33: Raku 📝
-- Perl 6 Evolution
-- Cro Framework
-- REST and gRPC Implementations
+### Chapter 33: Io 📝
+- Prototype-based Object-Oriented Language
+- Actor Model and Concurrency
+- Socket-based HTTP Server
+- REST Implementation
 
 ## Part VI: Shell & Scripting (Shell Languages - Supplementary)
 
@@ -348,4 +349,4 @@
 30. 📝 Julia (HTTP.jl)
 31. 📝 Gleam (Mist)
 32. 📝 V (vweb)
-33. 📝 Raku (Cro)
+33. 📝 Io (Socket-based)
